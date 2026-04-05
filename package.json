@@ -1,0 +1,21 @@
+{
+  "name": "256project",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/44erida/256PROJECT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/44erida/256PROJECT/issues"
+  },
+  "homepage": "https://github.com/44erida/256PROJECT#readme"
+}
