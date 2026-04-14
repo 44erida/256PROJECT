@@ -1,9 +1,11 @@
 import express from "express"
 
 const app = express();
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
 
 app.get("/", (req, res) => {
-    res.send(`<h1>Hello World</h1>`)
+   res.render("index.ejs")
 })
 
 app.listen(3000,()=>{
