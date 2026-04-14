@@ -47,6 +47,11 @@ header {
     border-bottom: 2px solid black;
 }   
 
+.header-container {
+  display: flex;
+  align-items: center;
+}
+
 .logo-container {
     display: flex;
     flex-direction: row;
@@ -61,3 +66,61 @@ header {
     height: auto;
 }
 
+.categories-container {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  flex-grow: 3;
+}
+
+.categories-container h3 {
+  margin: auto;
+}
+
+.profile-container {
+  flex-grow: 0.3;
+}
+
+.profile-container img {
+  width: 3.5em;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr; 
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+        "discounts rightnav"
+        "brands rightnav"
+        "products rightnav";
+    gap: 20px;
+    padding: 20px;
+}
+
+.discounts-container {
+    grid-area: discounts;
+    min-height: 220px;
+    background-color: lightblue;
+    border-radius: 12px;
+}
+
+.brands-container {
+    grid-area: brands;
+    min-height: 100px;
+    background-color: lightgreen;
+    border-radius: 12px;
+}
+
+.products-container {
+    grid-area: products;
+    min-height: 300px;
+    background-color: lightcoral;
+    border-radius: 12px;
+}
+
+.right-nav {
+    grid-area: rightnav;
+    background-color: lightgray;
+    border-radius: 12px;
+    min-height: 100%;
+}
