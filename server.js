@@ -8,6 +8,11 @@ app.get("/", (req, res) => {
    res.render("index.ejs")
 })
 
+app.get("/seller", (req, res) => {
+   res.render("main-seller.ejs")
+})
+
 app.listen(3000,()=>{
     console.log("HIII")
 })
+
