@@ -1,6 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
+    restart: always
     container_name: ctis256-project
     environment:
       MYSQL_ROOT_PASSWORD: root
