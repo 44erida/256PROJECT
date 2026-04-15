@@ -9,7 +9,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/seller", (req, res) => {
-    res.render("main-seller.ejs")
+    res.render("seller-home.ejs")
 })
 
 app.get("/seller/products", (req, res) => {
