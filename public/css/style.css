@@ -47,6 +47,20 @@ header {
     border-bottom: 2px solid black;
 }   
 
+/* I specifically putted header-seller to not mix the header configurations (I think we should split css files) */
+.header-seller {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    border-bottom: 2px solid black;
+}   
+/* CSS cofiguration for the icon on the header in seller page */
+.icons-seller-header {
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+
 .header-container {
   display: flex;
   align-items: center;
@@ -123,4 +137,9 @@ header {
     background-color: lightgray;
     border-radius: 12px;
     min-height: 100%;
+}
+
+body.seller {
+    display: flex;
+
 }
