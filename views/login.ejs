@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        fieldset {border-radius: 5px; width: max-content; margin: 30px auto; padding: 20px; }
+        p { color: red; text-align: center; }
+        img { width: 500px; border-radius: 5px;}
+    </style>
+</head>
+<body>
+    
+    <form action="/login" method="POST">
+        <fieldset>
+            <img src="/images/goose-wallpaper.webp" alt="">
+            <br><br>
+            <legend>Login</legend>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+            <br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br><br>
+            <label for="remember">Remember me:</label>
+            <input type="checkbox" id="remember" name="remember">
+            <br><br>
+            <button type="submit">Login</button>
+        </fieldset>
+    </form>
+    <p>First time? Please 
+        <a href="/register">Register</a>
+    </p>
+</body>
+</html>

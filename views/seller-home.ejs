@@ -4,24 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/css/seller-home.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        a {text-decoration: none;}
+        a.likes {color: red;}
+        a.logout {color: white;background-color: grey;
+        padding: 7px; width: 50px; margin: 8px; border-radius: 5px;}
+        a.add {color:#83C999;}
+
+    </style>
 </head>
 <link rel="stylesheet" href="/css/seller-home.css">
 <body>
+    <!-- maybe also logo to here -->
     <div class="left-sidebar">
         <a href="" class="logo">Lame Brand</a>
         <ul class="links">
-            <li>a</li>
-            <li>b</li>
+            <a href="/like" class="likes"><li>❤</li></a>
+            <a href="/add-product" class="add"><li>Add New Product</li></a>
             <li>c</li>
             <li>d</li>
             <li>e</li>
             <li>f</li>
         </ul>
+        <a href="/logout" class="logout">Logout</a>
     </div>
+    <h1>Welcome, <%= user.name %>!</h1>
+    
     <main class="main-content">
-            <header class="header">
-                
-            </header>
+        <header class="header">
+            <h4>How many products you sell</h4>
+        </header>
     </main>
 </body>
 </html>
+
