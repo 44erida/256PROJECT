@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        fieldset {
+            border-radius: 5px;
+            width: max-content;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        p {
+            color: red;
+            text-align: center;
+        }
+
+        img {
+            width: 500px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header-container">
+        <div class="logo-container">
+            <a href="/"><img src="/images/logo.png" alt="logo"></a>
+            <div class="plaster-logo">TurnaSold Seller</div>
+        </div>
+    </header>
+    <form action="/user-register" method="POST">
+        <fieldset>
+            <legend>Register</legend>
+            <img src="/images/indir.webp" alt="">
+            <br><br>
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br><br>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+            <br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br><br>
+            <label for="city">City:</label>
+            <select name="city" id="city" required>
+                <option value="">Select City</option>
+            </select>
+            <br><br>
+            <label for="district">District:</label>
+            <select name="district" id="district" required disabled>
+                <option value="">Select District</option>
+            </select>
+            <br><br>
+            <button type="submit">Register</button>
+        </fieldset>
+    </form>
+
+    <script>
+        // Gets the select elements on the page
+        const citySelect = document.getElementById("city");
+        const districtSelect = document.getElementById("district");
+        // The array where all the cities are stored
+        let cities = [];
+
+        async function loadCities() {
+            // Fetches the cities from the API
+            const res = await fetch("https://turkiyeapi.dev/api/v1/provinces");
+            // Converts the result into json format
+            const data = await res.json();
+
+            // Contains the actual cities
+            cities = data.data;
+
+            // Adds the cities as an option to the select
+            cities.forEach(city => {
+                citySelect.innerHTML += `<option value="${city.name}">${city.name}</option>`;
+            });
+        }
+
+        // Checks if the user changes the city
+        citySelect.addEventListener("change", function () {
+            // Resets the districts to avoid wrong City and district selection
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            districtSelect.disabled = true;
+
+            // Finds the city
+            const selected = cities.find(c => c.name === this.value);
+            if (!selected) return;
+
+            // Displays the district of the selected city
+            selected.districts.forEach(d => {
+                districtSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+            });
+
+            // Activates the select district options
+            districtSelect.disabled = false;
+        });
+
+        loadCities();
+    </script>
+</body>
+
+</html>
