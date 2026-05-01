@@ -35,7 +35,37 @@
         </section>
 
         <section class="products-container">
-            Products
+            <% if (products.length> 0) { %>
+
+                <% products.forEach(product=> { %>
+
+                    <div class="product-card">
+
+                        <img src="<%= product.image_path %>" alt="product">
+
+                        <h3>
+                            <%= product.title %>
+                        </h3>
+
+                        <p>Expires: <%= new Date(product.expiration_date).toLocaleDateString('en-GB') %>
+                        </p>
+
+                        <p>
+                            <span style="text-decoration: line-through;">
+                                <%= product.normal_price %> TL
+                            </span>
+                            <strong>
+                                <%= product.discounted_price %> TL
+                            </strong>
+                        </p>
+
+                    </div>
+
+                    <% }) %>
+
+                        <% } else { %>
+                            <p>No products available</p>
+                            <% } %>
         </section>
 
         <nav class="right-nav">
