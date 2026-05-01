@@ -15,8 +15,14 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.get("/", (req, res) => {
-    res.render("index.ejs")
+app.get("/", async (req, res) => {
+    try {
+        const [products] = await db.query("select * from products")
+
+        res.render("index.ejs", { products })
+    } catch (error) {
+        res.status(500).send("Error loading products " + error)
+    }
 })
 
 app.get("/seller", (req, res) => {
