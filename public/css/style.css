@@ -127,9 +127,25 @@ header {
 
 .products-container {
     grid-area: products;
+    display: flex;
+    justify-content: space-between;
     min-height: 300px;
     background-color: lightcoral;
     border-radius: 12px;
+}
+
+.product-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
 }
 
 .right-nav {
