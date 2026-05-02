@@ -64,6 +64,10 @@ header {
 .header-container {
   display: flex;
   align-items: center;
+  gap: 15px;
+  background-color:#04436b;
+  border: 1px solid #04436b;
+  border-radius: 8px;
 }
 
 .logo-container {
@@ -80,15 +84,49 @@ header {
     height: auto;
 }
 
-.categories-container {
-  width: auto;
-  display: flex;
-  justify-content: center;
-  flex-grow: 3;
+.search-bar{
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    border: 1px solid black;
+    border-radius: 15px;
+}
+.search-bar img{
+    width: 45px;
+    height: auto;
+
+}
+.search-bar input{
+    width: 300px;
+    height: 30px;
+    border: none;
+    background-color: none;  
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5); 
 }
 
-.categories-container h3 {
-  margin: auto;
+.fast-order{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid rgb(154, 25, 113);
+    box-shadow: 0 0 5px rgb(154, 25, 113), 0 0 25px rgb(154, 25, 113);
+}
+.fast-order:hover{
+    box-shadow: 0 0 5px rgb(154, 25, 113), 0 0 25px  rgb(154, 25, 113),
+     0 0 50px  rgb(154, 25, 113), 0 0 100px rgb(154, 25, 113),
+      0 0 200px  rgb(154, 25, 113)
+}
+.fast-order p{
+    white-space: nowrap;
+}
+.fast-order img{
+  width: 20px;
+  height: 20px;
 }
 
 .profile-container {
