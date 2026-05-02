@@ -79,6 +79,10 @@ CREATE TABLE products (
         ON DELETE CASCADE
 );
 
+INSERT INTO `products`(`product_id`, `market_id`, `title`, `stock`, `normal_price`, 
+`discounted_price`, `expiration_date`, `image_path`, `created_at`) VALUES ('1','1','charlotteLipNude','5','100','34.6','05-31-2026',
+'charlotte-tilbury-iconic-nude.webp','')
+
 -- One cart belongs to one consumer
 CREATE TABLE carts (
     cart_id INT AUTO_INCREMENT PRIMARY KEY,

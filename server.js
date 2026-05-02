@@ -1,5 +1,6 @@
 import express from "express";
 import "dotenv/config";
+import multer from "multer"
 import bcrypt from "bcrypt";
 import session from "express-session";
 import db from "./db.js";
@@ -8,6 +9,17 @@ const app = express();
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/images/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({ storage: storage })
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -63,6 +75,10 @@ app.get("/user-register", async (req, res) => {
     res.render("user-register")
 })
 
+app.get("/add-product", async (req, res) => {
+    res.render("seller-products")
+})
+
 app.post("/login", async (req, res) => {
     //login system for customer and buyers
     const { email, password, remember } = req.body
@@ -91,6 +107,11 @@ app.post("/login", async (req, res) => {
         res.status(500).send(error.code)
     }
 })
+
+app.post('/add', upload.single('productImage'), (req, res) => {
+  console.log(req.file); 
+  res.send("uploaded successfully");
+});
 
 app.post("/register", async (req, res) => {
     try {
