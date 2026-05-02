@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import multer from "multer"
 import bcrypt from "bcrypt";
+import path from "path";
 import session from "express-session";
 import db from "./db.js";
 
@@ -79,6 +80,36 @@ app.get("/add-product", async (req, res) => {
     res.render("seller-products")
 })
 
+app.get("/seller-home", (req, res) => {
+    if (req.session.user) {
+        res.render("seller-home", { user: req.session.user });
+    } else {
+        res.redirect("/login");
+    }
+})
+
+app.post("/add", upload.single("productImage"), async (req, res)=> {
+    try {
+        const { title, oldP, newP, type, tarih, stock } = req.body;
+        let newT
+        const imagePath = req.file ? `/images/${req.file.filename}` : null
+        switch(type) {
+            case "makeUp": newT = 1;
+            break;
+            case "medicine": newT = 2;
+            break;
+            case "market": newT = 3;
+            break;
+        }
+        const query = await db.query(
+"INSERT INTO products (title, normal_price, discounted_price, market_id, expiration_date, image_path, stock) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+[title, oldP, newP, newT, tarih, imagePath, stock]);
+        res.send("Ürün ve resim başarıyla kaydedildi!");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Bir hata oluştu: " + error.message);
+    }
+})
 app.post("/login", async (req, res) => {
     //login system for customer and buyers
     const { email, password, remember } = req.body
@@ -108,10 +139,7 @@ app.post("/login", async (req, res) => {
     }
 })
 
-app.post('/add', upload.single('productImage'), (req, res) => {
-  console.log(req.file); 
-  res.send("uploaded successfully");
-});
+
 
 app.post("/register", async (req, res) => {
     try {

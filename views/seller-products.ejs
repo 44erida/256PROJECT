@@ -71,21 +71,26 @@
         <h2>Please fill to add product</h2>
 
         <label for="image">Select Image:</label>
-        
+
         <input type="file" name="productImage" accept="image/*" required>
         <br>
         <label for="name">Please enter the name of the product</label>
         <br>
-        <input type="text" placeholder="Name of the product">
+        <input type="text" name="title" placeholder="Name of the product">
         <br>
         <label for="oldP">Please enter old price of the product</label>
         <br>
-        <input type="text" placeholder="Old Price">
+        <input type="text" name="oldP" placeholder="Old Price">
         <br>
         <label for="newP">Please enter new price of the product</label>
         <br>
-        <input type="text" placeholder="New Price">
+        <input type="text" name="newP" placeholder="New Price">
         <br>
+        <label for="stock">Please enter stock info of the product</label>
+        <br>
+        <input type="text" name="stock" placeholder="Stock">
+        <br>
+
         <label for="sehirler">Please select the product type</label>
         <select name="type" id="products">
         <option value="makeUp">Makeup</option>
@@ -95,6 +100,10 @@
         <br>
         <label for="dogumTarihi" class="form-label">Please select the expiration date</label>
     <input type="date" id="dogumTarihi" name="tarih" class="form-control">
+    <br>
+    <button type="submit">Add Product</button>
+     <a href="seller-home">Go Back</a>
     </form>
+   
 </body>
 </html>

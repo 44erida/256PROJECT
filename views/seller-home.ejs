@@ -12,7 +12,7 @@
         a.logout {color: white;background-color: grey;
         padding: 7px; width: 50px; margin: 8px; border-radius: 5px;}
         a.add {color:#83C999;}
-
+        
     </style>
 </head>
 <link rel="stylesheet" href="/css/seller-home.css">
@@ -30,13 +30,15 @@
         </ul>
         <a href="/logout" class="logout">Logout</a>
     </div>
-    <h1>Welcome, <%= user.name %>!</h1>
-    
-    <main class="main-content">
-        <header class="header">
-            <h4>How many products you sell</h4>
-        </header>
-    </main>
+    <div class="main">
+        <h1>Welcome, <%= user.name %>!</h1>
+        
+        <main class="main-content">
+            <header class="header">
+                <h4>How many products you sell</h4>
+            </header>
+        </main>
+    </div>
 </body>
 </html>
 
