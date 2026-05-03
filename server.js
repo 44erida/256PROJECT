@@ -155,6 +155,37 @@ app.post("/register", async (req, res) => {
 
 })
 
+app.post("/user-register", async (req, res) => {
+    try {
+        const { email, password, name, city, district } = req.body;
+
+        // 1. Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // 2. Insert into users
+        const [result] = await db.query(
+            `INSERT INTO users (email, password_hash, role, is_verified)
+             VALUES (?, ?, 'consumer', TRUE)`, // THe cosumer role is given by default here, also we just verified them for now
+            [email, hashedPassword]
+        );
+
+        // 3. Get inserted user_id to insert it into the customer table
+        const userId = result.insertId;
+
+        // 4. Insert into consumer_profiles
+        await db.query(
+            `INSERT INTO consumer_profiles (user_id, full_name, city, district)
+             VALUES (?, ?, ?, ?)`,
+            [userId, name, city, district]
+        );
+
+        res.redirect("/login");
+
+    } catch (error) {
+        res.status(500).send("Registration error " + error);
+    }
+});
+
 app.listen(3000, () => {
     console.log("Server running on port 3000")
 })
