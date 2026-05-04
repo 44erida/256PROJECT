@@ -3,42 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/seller-home.css">
+    <title>Lame Brand</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        a {text-decoration: none;}
-        a.likes {color: red;}
-        a.logout {color: white;background-color: grey;
-        padding: 7px; width: 50px; margin: 8px; border-radius: 5px;}
-        a.add {color:#83C999;}
-        
-    </style>
+    <link rel="stylesheet" href="/css/seller-home.css">
 </head>
-<link rel="stylesheet" href="/css/seller-home.css">
 <body>
-    <!-- maybe also logo to here -->
-    <div class="left-sidebar">
-        <a href="" class="logo">Lame Brand</a>
-        <ul class="links">
-            <a href="/like" class="likes"><li>❤</li></a>
-            <a href="/add-product" class="add"><li>Add New Product</li></a>
-            <li>c</li>
-            <li>d</li>
-            <li>e</li>
-            <li>f</li>
+    <aside class="sidebar" id="sidebar">
+        <a href="/" class="logo">Lame Brand</a>
+        <ul class="nav-links">
+            <li><a href="/seller" class="active"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+            <li><a href="/like" class="likes"><i class="fas fa-heart"></i> Favoriler</a></li>
+            <li><a href="/add-product" class="add"><i class="fas fa-plus"></i> Add New Product</a></li>
         </ul>
-        <a href="/logout" class="logout">Logout</a>
-    </div>
-    <div class="main">
-        <h1>Welcome, <%= user.name %>!</h1>
-        
-        <main class="main-content">
-            <header class="header">
-                <h4>How many products you sell</h4>
-            </header>
-        </main>
-    </div>
+        <div class="sidebar-bottom">
+            <a href="/logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <div style="flex:1"></div> 
+            <div class="header-right">
+                <button class="icon-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Satici&background=4f46e5&color=fff" alt="Profil">
+                    <div>
+                        <span style="font-size: 14px; font-weight: 600;">Satıcı Adı</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-wrapper">
+            <h1 class="page-title">Welcome, <%= user.name %> </h1>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-info">
+                        <h3>How many products you sold</h3>
+                        <div class="value">0</div>
+                    </div>
+                    <div class="kpi-icon"><i class="fas fa-box"></i></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            document.addEventListener('click', function(event) {
+                const isClickInsideMenu = sidebar.contains(event.target);
+                const isClickOnToggle = menuToggle.contains(event.target);
+                
+                if (!isClickInsideMenu && !isClickOnToggle && window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-

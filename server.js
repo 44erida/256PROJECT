@@ -38,10 +38,6 @@ app.get("/", async (req, res) => {
     }
 })
 
-app.get("/seller", (req, res) => {
-    res.render("seller-home.ejs")
-})
-
 app.get("/seller/products", (req, res) => {
     res.render("seller-products.ejs")
 })
@@ -150,7 +146,7 @@ app.post("/register", async (req, res) => {
         req.session.message = "Registration successful. Please login.";
         res.redirect("/login");
     } catch (error) {
-
+        res.send("REGISTER ERROR")
     }
 
 })
