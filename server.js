@@ -68,8 +68,8 @@ app.get("/login", (req, res) => {
     res.render("login")
 })
 
-app.get("/register", (req, res) => {
-    res.render("register");
+app.get("/seller-register", (req, res) => {
+    res.render("seller-register");
 });
 
 app.get("/user-register", async (req, res) => {
@@ -112,14 +112,17 @@ app.post("/add", upload.single("productImage"), async (req, res)=> {
 })
 app.post("/login", async (req, res) => {
     //login system for customer and buyers
+    console.log("entered end point")
     const { email, password, remember } = req.body
     try {
-        const [rows] = await db.query(
-            "SELECT * FROM user WHERE email = ?", [email])
+        console.log("sending select query")
+        const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email])
         if (rows.length > 0) {
+            console.log("There is a match in database")
             const user = rows[0]
-            const match = await bcrypt.compare(password, user.password)
+            const match = await bcrypt.compare(password, user.password_hash)
             if (match) {
+                console.log("match")
                 req.session.user = user
                 req.session.isAuthenticated = true
                 if (remember) {
@@ -128,11 +131,11 @@ app.post("/login", async (req, res) => {
                 res.render("seller-home", { user: req.session.user })
             } else {
                 req.session.message = "Invalid username or password"
-                res.redirect("/login")
+                return res.redirect("/login")
             }
         } else {
             req.session.message = "Invalid username or password"
-            res.redirect("/login")
+            return res.redirect("/login")
         }
     } catch (error) {
         res.status(500).send(error.code)
@@ -141,18 +144,35 @@ app.post("/login", async (req, res) => {
 
 
 
-app.post("/register", async (req, res) => {
+app.post("/seller-register", async (req, res) => {
     try {
-        const { email, password, name } = req.body;
+        const { email, password, name, city, district } = req.body;
+
+        // 1. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // 2. Insert into users
+        const [result] = await db.query(
+            `INSERT INTO users (email, password_hash, role, is_verified)
+             VALUES (?, ?, 'market', TRUE)`, // THe cosumer role is given by default here, also we just verified them for now
+            [email, hashedPassword]
+        );
+
+        // 3. Get inserted user_id to insert it into the customer table
+        const userId = result.insertId;
+
+        // 4. Insert into consumer_profiles
         await db.query(
-            "INSERT INTO user (email, password, name) VALUES (?, ?, ?)", [email, hashedPassword, name]);
-        req.session.message = "Registration successful. Please login.";
+            `INSERT INTO market_profiles (user_id, market_name, city, district)
+             VALUES (?, ?, ?, ?)`,
+            [userId, name, city, district]
+        );
+
         res.redirect("/login");
+
     } catch (error) {
-
+        res.status(500).send("Registration error " + error);
     }
-
 })
 
 app.post("/user-register", async (req, res) => {
