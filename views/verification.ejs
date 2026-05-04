@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <% if (typeof info !== 'undefined' && info) { %>
+        <% if (typeof isError !== 'undefined' && isError) { %>
+            <!-- Hata Mesajı (Kırmızı) -->
+            <div style="color: red;">
+                <h3><%= info %></h3>
+            </div>
+        <% } else { %>
+            <!-- Bilgi Mesajı (Yeşil) -->
+            <div style="color: green;">
+                <h3><%= info %></h3>
+            </div>
+        <% } %>
+    <% } %>
+    <form action="verif" method="post">
+        <input type="text" name="code">
+        <button type="submit">Enter</button>
+    </form>
+    <div style="margin-top: 20px;">
+    <p>Kod gelmedi mi?</p>
+    <a href="/resend-code" id="resend-link">Kodu Tekrar Gönder</a>
+</div>
+
+<script>
+    document.getElementById('resend-link').onclick = function() {
+        this.innerHTML = "Gönderiliyor...";
+        this.style.pointerEvents = 'none';
+        this.style.color = 'gray';
+    };
+</script>
+</body>
+</html>

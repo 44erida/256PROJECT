@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer"
 import express from "express";
 import "dotenv/config";
 import multer from "multer"
@@ -21,7 +22,32 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
 
+async function sendVerifyEmail(email, token) {
+    console.log("-----------------------");
+    console.log(`GİDEN MAİL: ${email}`);
+    console.log(`DOĞRULAMA KODU: ${token}`);
+    console.log("-----------------------");
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Doğrulama Kodunuz",
+            text: `Kodunuz: ${token}`
+        });
+        console.log("Mail gönderildi!");
+    } catch (error) {
+        console.error("MAİL GÖNDERME HATASI:", error.message);
+    }
+}
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -84,6 +110,17 @@ app.get("/seller-home", (req, res) => {
     }
 })
 
+app.get("/resend-code", async (req, res) => {
+    const email = req.session.verifyEmail;
+    if (!email) return res.redirect("/login");
+
+    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+    await db.query("UPDATE users SET verification_code = ? WHERE email = ?", [newCode, email]);
+    await sendVerifyEmail(email, newCode);
+    
+    res.redirect("/verify-page?message=resent");
+});
+
 app.post("/add", upload.single("productImage"), async (req, res)=> {
     try {
         const { title, oldP, newP, type, tarih, stock } = req.body;
@@ -110,6 +147,7 @@ app.post("/login", async (req, res) => {
     //login system for customer and buyers
     // console.log("entered end point")
     const { email, password, remember } = req.body
+    
     try {
         // console.log("sending select query")
         const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email])
@@ -118,13 +156,21 @@ app.post("/login", async (req, res) => {
             const user = rows[0]
             const match = await bcrypt.compare(password, user.password_hash)
             if (match) {
-                // console.log("match")
-                req.session.user = user
-                req.session.isAuthenticated = true
+                
+                const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); 
+                await db.query("UPDATE users SET verification_code = ? WHERE email = ?", 
+                    [verificationCode, email]);
+                    
+                await sendVerifyEmail(email, verificationCode);
+                req.session.verifyEmail = email;    
+                
+                req.session.user = user;
+                // req.session.isAuthenticated = true;
+                
                 if (remember) {
                     req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000
                 }
-                res.render("seller-home", { user: req.session.user })
+                res.render("verification")
             } else {
                 req.session.message = "Invalid username or password"
                 return res.redirect("/login")
@@ -138,7 +184,43 @@ app.post("/login", async (req, res) => {
     }
 })
 
+app.get("/verify-page", (req, res) => {
+    if (!req.session.verifyEmail) return res.redirect("/login");
+    let info = null
+    let isError = null
+    if (req.query.message === 'resent') {
+        info = "New Code Sent";
+    } else if (req.query.message === 'error') {
+        info = "Wrong input. Try Again";
+        isError = 1
+    }
+    res.render("verification", { email: req.session.verifyEmail, info: info, isError: isError });
+});
 
+app.post("/verif", async (req, res) => {
+    const { code } = req.body;
+    const email = req.session.verifyEmail;
+    console.log("Onaylanacak Email:", email); 
+    console.log("Girilen Kod:", code);
+    try {
+        const [rows] = await db.query("SELECT * FROM users WHERE email = ? AND verification_code = ?", 
+            [email, code]);
+
+        if (rows.length > 0) {
+            const user = rows[0];
+            console.log("Hangi mail:", req.session.verifyEmail);
+            console.log("Kod:", code);
+            await db.query("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = ?", [email]);
+            delete req.session.verifyEmail; 
+            req.session.message = "success";
+            res.redirect("/seller-home");
+        } else {
+            res.redirect("/verify-page?message=error")
+        }
+    } catch (error) {
+        res.status(500).send(error.code);
+    }
+});
 
 app.post("/seller-register", async (req, res) => {
     try {
@@ -150,7 +232,7 @@ app.post("/seller-register", async (req, res) => {
         // 2. Insert into users
         const [result] = await db.query(
             `INSERT INTO users (email, password_hash, role, is_verified)
-             VALUES (?, ?, 'market', TRUE)`, // THe cosumer role is given by default here, also we just verified them for now
+             VALUES (?, ?, 'market', FALSE)`, // THe cosumer role is given by default here, also we just verified them for now
             [email, hashedPassword]
         );
 
@@ -177,24 +259,24 @@ app.post("/user-register", async (req, res) => {
 
         // 1. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        // const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
         // 2. Insert into users
         const [result] = await db.query(
             `INSERT INTO users (email, password_hash, role, is_verified)
-             VALUES (?, ?, 'consumer', TRUE)`, // THe cosumer role is given by default here, also we just verified them for now
+             VALUES (?, ?, 'consumer', FALSE)`, // THe cosumer role is given by default here, also we just verified them for now
             [email, hashedPassword]
         );
-
-        // 3. Get inserted user_id to insert it into the customer table
         const userId = result.insertId;
-
+        // 3. Get inserted user_id to insert it into the customer table
+        
         // 4. Insert into consumer_profiles
         await db.query(
             `INSERT INTO consumer_profiles (user_id, full_name, city, district)
              VALUES (?, ?, ?, ?)`,
             [userId, name, city, district]
         );
-
+        
+        // req.session.verifyEmail = email; 
         res.redirect("/login");
 
     } catch (error) {
