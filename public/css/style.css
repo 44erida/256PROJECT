@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Plaster&display=swap');
 /* Google Font for logo */
 
-
+body{
+    gap: 20px;
+    padding: 20px;
+    background-color:#D8BFD8	;
+}
 /* Google Font Logo Class */
 .plaster-logo {
   font-family: "Plaster", system-ui;
@@ -65,9 +69,12 @@ header {
   display: flex;
   align-items: center;
   gap: 15px;
-  background-color:#04436b;
-  border: 1px solid #04436b;
-  border-radius: 8px;
+  background-color:#F8C8DC	;
+  border-radius: 15px;
+}
+
+.header-container> *{
+    flex:1 1 auto;
 }
 
 .logo-container {
@@ -87,18 +94,19 @@ header {
 .search-bar{
     display: flex;
     flex-direction: row;
-    vertical-align: middle;
+    vertical-align: center;
+    justify-content:space-between;
     border: 1px solid black;
     border-radius: 15px;
 }
-.search-bar img{
-    width: 45px;
-    height: auto;
 
+.search-bar img{
+    width: 60px;
+    height: auto;
 }
 .search-bar input{
-    width: 300px;
-    height: 30px;
+    width: 100%;
+    height: 40px;
     border: none;
     background-color: none;  
     padding: 5px;
@@ -113,13 +121,17 @@ header {
     justify-content: center;
     border-radius: 8px;
     padding: 10px;
-    border: 1px solid rgb(154, 25, 113);
+    border: 1px solid rgb(208, 80, 167);
+    background-color: F8C8DC;
     box-shadow: 0 0 5px rgb(154, 25, 113), 0 0 25px rgb(154, 25, 113);
+    font-size: large;
 }
+
 .fast-order:hover{
     box-shadow: 0 0 5px rgb(154, 25, 113), 0 0 25px  rgb(154, 25, 113),
-     0 0 50px  rgb(154, 25, 113), 0 0 100px rgb(154, 25, 113),
-      0 0 200px  rgb(154, 25, 113)
+    0 0 50px  rgb(154, 25, 113), 0 0 100px rgb(154, 25, 113),
+    0 0 200px  rgb(154, 25, 113);
+    cursor: pointer;
 }
 .fast-order p{
     white-space: nowrap;
@@ -136,6 +148,146 @@ header {
 .profile-container img {
   width: 3.5em;
 }
+
+.main-box{
+    display: flex;
+    flex-direction: column;
+}
+
+.initial-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #F8C8DC;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 20px 0px;
+    box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1), 
+    0 10px 20px rgba(0, 0, 0, 0.05);
+}
+.initial-box > *{
+    flex: 1 1 auto;
+}
+.initial-box>img{
+    width: 360px;
+    height: 360px;
+}
+.initial-box > h1> span{
+  color: powderblue;
+  text-align: center;
+  animation: glow 1s ease-in-out infinite alternate;
+
+}
+
+button { 
+    background-color: rgb(68, 190, 190); 
+    color: white; 
+    border: 1px solid black; 
+    padding: 8px 16px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+} 
+button:hover { 
+    background-color: #20b2aa; 
+    transform: translateY(-2px); 
+} 
+
+.product-slideshow { 
+    background: #F8C8DC; 
+    padding: 30px; 
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1), 
+    0 10px 20px rgba(0, 0, 0, 0.05);
+    position: relative; 
+    overflow: hidden;  
+}
+
+.slideshow-container {
+    display: flex;
+    align-items: center;
+    width: 1000px; 
+    margin: 0 auto; 
+    overflow: hidden; 
+    position: relative;
+}
+
+.slides-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: fit-content;
+    gap: 20px;
+}
+
+.slide {
+    flex-shrink: 0;
+    width: 320px;
+    box-sizing: border-box; 
+}
+
+.slide img { 
+    width: 200px; 
+    height: 200px;  
+    border-radius: 8px; 
+    margin-bottom: 15px; 
+} 
+.slide h3 { 
+    color: #04436b; 
+    margin-bottom: 10px; 
+    font-size: 1.2em; 
+} 
+.slide p { 
+    color: #333; 
+    margin-bottom: 15px; 
+    line-height: 1.4; 
+} 
+.slide .price { 
+    color: rgb(68, 190, 190); 
+    font-weight: bold; 
+    font-size: 1.1em; 
+    margin-bottom: 15px; 
+} 
+
+.slideshow-controls { 
+    display: flex; 
+    justify-content: center; 
+    gap: 10px; 
+    margin-top: 20px; 
+    align-items: center; 
+} 
+.prev, .next { 
+    background-color: rgb(154, 25, 113); 
+    color: white; 
+    border: none; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    font-size: 18px; 
+} 
+.prev:hover, .next:hover {
+    background-color: #32cd32; 
+    color: rgb(154, 25, 113); 
+    transform: scale(1.05); 
+} 
+.slideshow-title { 
+    text-align: center; 
+    color: white; 
+    font-size: 2em; 
+    margin-bottom: 30px; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+} 
+.slide-position { 
+    color: white; 
+    font-size: 14px; 
+    margin: 0 10px; 
+}
+
+
+/*
 
 .main-container {
     display: grid;
@@ -192,8 +344,20 @@ header {
     border-radius: 12px;
     min-height: 100%;
 }
+*/
 
 body.seller {
     display: flex;
 
 }
+
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #0d0d91, 0 0 20px #6da5e0, 0 0 30px #27c99e;
+  }
+  to {
+    text-shadow: 0 0 20px #5f5fcc, 0 0 30px #1e9e2f, 0 0 40px #2c1f59;
+  }
+}
+
