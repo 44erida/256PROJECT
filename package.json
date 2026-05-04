@@ -20,16 +20,14 @@
   "homepage": "https://github.com/44erida/256PROJECT#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "cyrpto": "^0.0.1-security",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "multer": "^2.1.1",
-    "mysql2": "^3.22.2",
-    "nodemailer": "^8.0.7"
+    "mysql2": "^3.22.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "3.1.14"
   }
 }
