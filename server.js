@@ -108,17 +108,17 @@ app.post("/add", upload.single("productImage"), async (req, res)=> {
 })
 app.post("/login", async (req, res) => {
     //login system for customer and buyers
-    console.log("entered end point")
+    // console.log("entered end point")
     const { email, password, remember } = req.body
     try {
-        console.log("sending select query")
+        // console.log("sending select query")
         const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email])
         if (rows.length > 0) {
-            console.log("There is a match in database")
+            // console.log("There is a match in database")
             const user = rows[0]
             const match = await bcrypt.compare(password, user.password_hash)
             if (match) {
-                console.log("match")
+                // console.log("match")
                 req.session.user = user
                 req.session.isAuthenticated = true
                 if (remember) {
