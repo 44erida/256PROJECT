@@ -82,17 +82,16 @@ router.get("/update/:id", async (req, res) => {
         const [row] = await db.query(
             "select * from products where product_id = ?", 
         [id])
-
         console.log(row)
-        //are we going to do this part that they have to 
-        //change all the info or what?
-        //const [products] = await db.query("update ")
         res.render("update", {pro: row[0]})
     } catch (error) {
         
     }
-    //send also the information got from the db
-    //then send them to their page and also return the [products]
 })
 
+router.post("/update/:id", async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    res.redirect("seller-home")
+})
 export default router;
