@@ -110,6 +110,10 @@ app.get("/seller-home", (req, res) => {
     }
 })
 
+app.get("/consumer-home",(req,res)=>{
+    res.render("consumer-home");
+})
+
 app.get("/resend-code", async (req, res) => {
     const email = req.session.verifyEmail;
     if (!email) return res.redirect("/login");
@@ -220,7 +224,11 @@ app.post("/verif", async (req, res) => {
             await db.query("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = ?", [email]);
             delete req.session.verifyEmail; 
             req.session.message = "success";
-            res.redirect("/seller-home");
+            if (user.role === "market"){
+            res.redirect("/seller-home");}
+            else{
+                res.redirect("/consumer-home");
+            }
         } else {
             res.redirect("/verify-page?message=error")
         }
