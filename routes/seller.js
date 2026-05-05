@@ -27,7 +27,7 @@ router.get("/seller-home", async (req, res) => {
         }
         
         console.log("Listelenecek Ürün Sayısı:", products.length);
-        res.render("seller-home", { user: req.session.user, products: products });
+        res.render("seller-home", { user: req.session.user, products: products, count: products.length });
     } else {
         res.redirect("/login");
     }
@@ -77,12 +77,22 @@ router.post("/add", upload.single("productImage"), async (req, res) => {
 });
 
 router.get("/update/:id", async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id
     try {
+        const [row] = await db.query(
+            "select * from products where product_id = ?", 
+        [id])
+
+        console.log(row)
+        //are we going to do this part that they have to 
+        //change all the info or what?
+        //const [products] = await db.query("update ")
+        res.render("update", {pro: row[0]})
     } catch (error) {
-        console.error(error);
+        
     }
-    res.render("update");
-});
+    //send also the information got from the db
+    //then send them to their page and also return the [products]
+})
 
 export default router;

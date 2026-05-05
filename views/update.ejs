@@ -4,8 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+    body {
+        background: linear-gradient(135deg, #abe689 0%, #1d5888 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    form {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 5px;
+        display: block;
+    }
+    input[type="text"],
+    input[type="date"],
+    select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 15px;
+        transition: border-color 0.3s;
+    }
+    input:focus, select:focus {
+        border-color: #4A90E2;
+        outline: none;
+    }
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #4A90E2;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    button:hover {
+        background-color: #357ABD;
+    }
+    img {
+        height: 130px;
+    }
+</style>
 </head>
 <body>
-    Update page
+    <form action="add" method="post" enctype="multipart/form-data">
+        <h2>Update Product Information</h2>
+
+        <label for="image">Select Image:</label>
+        <!-- maybe display img -->
+        <br>
+        <input type="file" name="productImage" accept="image/*">
+        <br>
+        <label for="name">Please enter the name of the product</label>
+        <br>
+        <input type="text" name="title" value="<%= pro.title%>">
+        <br>
+        <label for="oldP">Please enter old price of the product</label>
+        <br>
+        <input type="text" name="oldP" value="<%= pro.normal_price%>">
+        <br>
+        <label for="newP">Please enter new price of the product</label>
+        <br>
+        <input type="text" name="newP" value="<%= pro.discounted_price%>">
+        <br>
+        <label for="stock">Please enter stock info of the product</label>
+        <br>
+        <input type="text" name="stock" value="<%= pro.stock%>">
+        <br>
+
+        <label for="sehirler">Please select the product type</label>
+        <select name="type" id="products">
+        <option value="makeUp">Makeup</option>
+        <option value="medicine">Medicine</option>
+        <option value="market">Market</option>
+        </select>
+        <br>
+        <label for="dogumTarihi" class="form-label">Please select the expiration date</label>
+        <input type="date" id="dogumTarihi" name="tarih" class="form-control">
+        <br>
+        <button type="submit">Add Product</button>
+        <a href="seller-home">Go Back</a>
+    </form>
+   
 </body>
 </html>

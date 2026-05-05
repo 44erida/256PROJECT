@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
                 await sendVerifyEmail(email, verificationCode);
                 
                 req.session.verifyEmail = email;
-                res.render("verification");
+                res.redirect("/verify-page");
             } else {
                 console.log("Hatalı şifre girildi.");
                 req.session.message = "Invalid username or password";
