@@ -170,16 +170,14 @@ app.post("/login", async (req, res) => {
                 if (remember) {
                     req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000
                 }
-<<<<<<< HEAD
                 res.render("verification")
-=======
-                if (user.role === "consumer"){
-                    res.render("consumer-home")
-                }
-                else {
-                    res.render("seller-home", { user: req.session.user })
-                }
->>>>>>> 35830fe (little fixes, user and seller registration problem)
+
+                //if (user.role === "consumer"){
+                //   res.render("consumer-home")
+                //}
+                //else {
+                //    res.render("seller-home", { user: req.session.user })
+                //}
             } else {
                 req.session.message = "Invalid username or password"
                 return res.redirect("/login")
@@ -241,11 +239,7 @@ app.post("/seller-register", async (req, res) => {
         // 2. Insert into users
         const [result] = await db.query(
             `INSERT INTO users (email, password_hash, role, is_verified)
-<<<<<<< HEAD
              VALUES (?, ?, 'market', FALSE)`, // THe cosumer role is given by default here, also we just verified them for now
-=======
-             VALUES (?, ?, 'market', TRUE)`, // THe market role is given by default here, also we just verified them for now
->>>>>>> 35830fe (little fixes, user and seller registration problem)
             [email, hashedPassword]
         );
 
