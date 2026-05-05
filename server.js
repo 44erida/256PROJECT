@@ -119,8 +119,10 @@ app.get("/seller-home", async (req, res) => {
 
 app.get("/consumer-home", async (req, res) => {
     try {
+        const [products] = await db.query("select * from products")
+    
         if (req.session.user) {
-            res.render("consumer-home", { user: req.session.user });
+            res.render("consumer-home", { user: req.session.user ,products: products});
         } else{
             res.redirect("/login")
         }

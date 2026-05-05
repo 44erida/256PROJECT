@@ -44,23 +44,26 @@
     </header>
 
     <main class="main-box">
-        <section class="initial-box">
-
-            <h1>Unveil your natural glow <br> with <span style="font-style: italic;font-weight: bold;">Turnasold</span>
-                <br>
-                <a href="/login"><button>Shop Now</button></a>
-            </h1>
-            <img src="/images/skincare.png">
-
-
-        </section>
-
 
         <section class="product-slideshow">
-            <h2 class="slideshow-title">Featured Products</h2>
+            <h1>Personalized for you</h1>
             <div class="slideshow-container">
                 <div class="slides-wrapper">
-
+                      <% products.forEach( p=> {%>
+                        `<div class="slide">
+                            <img src="<%=p.image_path%>" alt="Product 1">
+                            <h3>
+                                <%=p.title%>
+                            </h3>
+                            <div class="price" style="text-decoration: line-through;">
+                                <%=p.normal_price%> TL
+                            </div>
+                            <div class="price">
+                                <%=p.discounted_price%> TL
+                            </div>
+                            <a href="/login"><button>Add to Cart</button></a>`
+                        </div>
+                        <%})%>
                 </div>
             </div>
 
