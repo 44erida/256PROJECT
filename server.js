@@ -50,8 +50,12 @@ async function sendVerifyEmail(email, token) {
 }
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
+    resave: true,
+    saveUninitialized: false,
+    cookie: { 
+        secure: false, // Localhost'ta çalıştığın için false olmalı (HTTP)
+        maxAge: 1000 * 60 * 60 * 24 // 24 saatlik ömür
+    }
 }));
 
 app.get("/", async (req, res) => {
@@ -102,9 +106,12 @@ app.get("/add-product", async (req, res) => {
     res.render("seller-products")
 })
 
-app.get("/seller-home", (req, res) => {
+app.get("/seller-home", async (req, res) => {
     if (req.session.user) {
-        res.render("seller-home", { user: req.session.user });
+        console.log("user " + req.session.user.user_id)
+        const [products] = await db.query("SELECT * FROM products WHERE market_id = ?", [req.session.user.user_id]);
+        console.log(products)
+        res.render("seller-home", { user: req.session.user, products: products });
     } else {
         res.redirect("/login");
     }
@@ -148,21 +155,25 @@ app.get("/resend-code", async (req, res) => {
 
 app.post("/add", upload.single("productImage"), async (req, res) => {
     try {
+        console.log("Dosya bilgisi:", req.file); // Eğer bu 'undefined' ise formdan dosya gelmiyor demektir.
+    console.log("Body bilgisi:", req.body);
         const { title, oldP, newP, type, tarih, stock } = req.body;
-        let newT
+        // let newT = 1
         const imagePath = req.file ? `/images/${req.file.filename}` : null
-        switch (type) {
-            case "makeUp": newT = 1;
-                break;
-            case "medicine": newT = 2;
-                break;
-            case "market": newT = 3;
-                break;
-        }
-        const query = await db.query(
-            "INSERT INTO products (title, normal_price, discounted_price, market_id, expiration_date, image_path, stock) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [title, oldP, newP, newT, tarih, imagePath, stock]);
-        res.send("Ürün ve resim başarıyla kaydedildi!");
+        // switch (type) {
+        //     case "makeUp": newT = 1;
+        //         break;
+        //     case "medicine": newT = 2;
+        //         break;
+        //     case "market": newT = 3;
+        //         break;
+        // }
+        const sellerId = req.session.user.user_id;
+        await db.query(
+            "INSERT INTO products (market_id, title, stock, normal_price, discounted_price, expiration_date, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [sellerId, title, stock, oldP, newP, tarih, imagePath]);
+           
+        res.redirect("seller-home")
     } catch (error) {
         console.error(error);
         res.status(500).send("Bir hata oluştu: " + error.message);
@@ -172,42 +183,59 @@ app.post("/login", async (req, res) => {
     //login system for customer and buyers
     // console.log("entered end point")
     const { email, password, remember } = req.body
-
+    console.log(remember)
     try {
-        // console.log("sending select query")
         const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email])
         if (rows.length > 0) {
             // console.log("There is a match in database")
             const user = rows[0]
+
+            
             const match = await bcrypt.compare(password, user.password_hash)
             if (match) {
 
+                req.session.user = user
+                req.session.isAuthenticated = true;
+                if (remember === "on") {
+                    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; 
+                } else {
+                    req.session.cookie.expires = false;
+                }
+                
                 const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
                 await db.query("UPDATE users SET verification_code = ? WHERE email = ?",
                     [verificationCode, email]);
-
                 await sendVerifyEmail(email, verificationCode);
                 req.session.verifyEmail = email;
-
-                req.session.user = user;
-                // req.session.isAuthenticated = true;
-
-                if (remember) {
-                    req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000
-                }
+                
+                
                 res.render("verification")
-
             } else {
                 req.session.message = "Invalid username or password"
                 return res.redirect("/login")
             }
         } else {
-            req.session.message = "Invalid username or password"
+            req.session.message = "You don't have an account. Register"
             return res.redirect("/login")
         }
     } catch (error) {
         res.status(500).send(error.code)
     }
+})
+
+//this is to update product
+app.get("/update/:id", async (req, res) => {
+    const id = req.params.id
+    const info = req.body //the new informaion will be stored here
+    try {
+        //are we going to do this part that they have to 
+        //change all the info or what?
+        //const [products] = await db.query("update ")
+    } catch (error) {
+        
+    }
+    res.render("update")//send also the information got from the db
+    //then send them to their page and also return the [products]
 })
 
 app.get("/verify-page", (req, res) => {
@@ -229,14 +257,17 @@ app.post("/verif", async (req, res) => {
     console.log("Onaylanacak Email:", email);
     console.log("Girilen Kod:", code);
     try {
-        const [rows] = await db.query("SELECT * FROM users WHERE email = ? AND verification_code = ?",
+        const [rows] = await db.query(
+            "SELECT * FROM users WHERE email = ? AND verification_code = ?",
             [email, code]);
-
         if (rows.length > 0) {
             const user = rows[0];
+            req.session.user = user
             console.log("Hangi mail:", req.session.verifyEmail);
             console.log("Kod:", code);
-            await db.query("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = ?", [email]);
+            await db.query(
+                "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = ?", 
+                [email]);
             delete req.session.verifyEmail;
             req.session.message = "success";
             if (user.role === "market") {
@@ -256,29 +287,23 @@ app.post("/verif", async (req, res) => {
 app.post("/seller-register", async (req, res) => {
     try {
         const { email, password, name, city, district } = req.body;
-
         // 1. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-
         // 2. Insert into users
         const [result] = await db.query(
             `INSERT INTO users (email, password_hash, role, is_verified)
              VALUES (?, ?, 'market', FALSE)`, // THe cosumer role is given by default here, also we just verified them for now
             [email, hashedPassword]
         );
-
         // 3. Get inserted user_id to insert it into the markets table
         const userId = result.insertId;
-
         // 4. Insert into market_profiles
         await db.query(
             `INSERT INTO market_profiles (user_id, market_name, city, district)
              VALUES (?, ?, ?, ?)`,
             [userId, name, city, district]
         );
-
         res.redirect("/login");
-
     } catch (error) {
         res.status(500).send("Registration error " + error);
     }
@@ -287,7 +312,6 @@ app.post("/seller-register", async (req, res) => {
 app.post("/user-register", async (req, res) => {
     try {
         const { email, password, name, city, district } = req.body;
-
         // 1. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
         // const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -299,17 +323,14 @@ app.post("/user-register", async (req, res) => {
         );
         const userId = result.insertId;
         // 3. Get inserted user_id to insert it into the customer table
-
         // 4. Insert into consumer_profiles
         await db.query(
             `INSERT INTO consumer_profiles (user_id, full_name, city, district)
              VALUES (?, ?, ?, ?)`,
             [userId, name, city, district]
         );
-
         // req.session.verifyEmail = email; 
         res.redirect("/login");
-
     } catch (error) {
         res.status(500).send("Registration error " + error);
     }
