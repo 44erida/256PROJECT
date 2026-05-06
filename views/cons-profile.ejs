@@ -1,21 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/css/consumer-home.css">
 </head>
+
 <body>
     <div class="header-container">
-    <h1 style="color: purple;">Profile Information</h1>
+        <h1 style="color: purple;">Profile Information</h1>
     </div>
-    <h2><a href="">My orders</a></h2>
-    <ul>
-        <li>Active orders</li>
-        <li>Past orders</li>
-    </ul>
-    <h2><a href="">My addresses</a></h2>
-    <h2><a href=""><img src="/images/customer-icons/gift.png" alt="">TurnaPoints</a></h2>
+
+
+    <!-- My Orders Dropdown -->
+    <details>
+        <summary>
+            <h2><img src="/images/customer-icons/orders.png"> My orders</h2>
+        </summary>
+        <ul>
+            <li><a href="/orders/active">Active orders</a></li>
+            <li><a href="/orders/past">Past orders</a></li>
+        </ul>
+    </details>
+
+    <!-- My Addresses Dropdown -->
+    <details>
+        <summary>
+            <h2><img src="/images/customer-icons/address.png" alt=""> My addresses</h2>
+        </summary>
+        <ul>
+            <% address.forEach(a=>{%>
+            <li><%=a.district%> <%=a.city%></li>
+            <%})%>
+        </ul>
+    </details>
+  <!-- Credit cards Dropdown -->
+     <details>
+        <summary>
+            <h2><img src="/images/customer-icons/creditcard.png" alt=""> Saved credit card information </h2>
+        </summary>
+        <ul>
+            <% cards.forEach(c=>{%>
+            <li>
+                <table>
+                   <tr><td style="font-weight: bold;">Name:</td>
+                   <td><%=c.card_holder%></td></tr>
+                   <tr><td style="font-weight: bold;">Card number:</td>
+                   <td>**** **** **** <%= c.card_number.toString().slice(-4) %></td></tr>
+                   <tr><td style="font-weight: bold;">Expiration date:</td>
+                   <td><%= new Date(c.expiration_date).toLocaleDateString('en-GB').replace(/\//g, '-') %></td></tr>
+                   <tr><td style="font-weight: bold;">CVV:</td>
+                   <td>***</td></tr>
+                </table>
+            </li>
+            
+                <%})%>
+        </ul>
+    </details>
+
+    <!-- TurnaPoints Dropdown -->
+    <details>
+        <summary>
+            <h2><img src="/images/customer-icons/gift.png" alt=""> TurnaPoints</h2>
+        </summary>
+        <ul>
+            <span>For each order above 500TL you get 25TurnaPoints, if the order is above 1000TL you get 75 TurnaPoints <br></span>
+            <span>Depending on how many points you collect, you earn coupons specialized for you!<br></span>
+            <li>coupon 1</li>
+            <li>coupon 2</li>
+        </ul>
+    </details>
 </body>
+
 </html>

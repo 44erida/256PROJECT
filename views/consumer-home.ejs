@@ -21,12 +21,36 @@
         </div>
 
         <div class="welcome-msg">
-            <h3>Welcome <%=user.email%>
+            <h3>Welcome <%=consumer[0].full_name%>
             </h3>
         </div>
         <div class="profile-container">
             <a href=""><img src="/icons/favorites2 (2).png"></a>
-            <a href=""><img src="/icons/basket.png"></a>
+
+            <div class="cart-container">
+
+                <button class="cart-icon">
+                    <img src="/icons/basket.png" alt="Cart">
+                    <span class="cart-count" style="color: black;"><%=items.length%></span>
+                </button>
+                <div class="cart-dropdown">
+                    <ul class="cart-items">
+                        <%items.forEach(i=>{%>
+                        <li class="cart-item">
+                            <img src="<%=i.image_path%>" alt="<%=i.title%>">
+                            <div class="item-details">
+                                <p class="item-name"><%=i.title%></p>
+                                <p class="item-price"><%=i.total_item_price%></p>
+                                <p class="item-quantity"><%=i.quantity%></p>
+                            </div>
+                        </li>
+                        <%})%>
+                    </ul>
+                    <div class="cart-footer">
+                        <a href="/checkout" class="checkout-btn">Go to Checkout</a>
+                    </div>
+                </div>
+            </div>
             <div class="dropdown">
                 <button class="dropdown-btn" id="menuButton">
                     <img src="/icons/menu-icon.png">
@@ -37,7 +61,7 @@
                     <li>
                         <hr>
                     </li>
-                    <li><a href="/"><img src="/icons/logout.png" >Logout</a></li>
+                    <li><a href="/"><img src="/icons/logout.png">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -49,7 +73,7 @@
             <h1>Personalized for you</h1>
             <div class="slideshow-container">
                 <div class="slides-wrapper">
-                      <% products.forEach( p=> {%>
+                    <% products.forEach( p=> {%>
                         `<div class="slide">
                             <img src="<%=p.image_path%>" alt="Product 1">
                             <h3>
@@ -61,7 +85,13 @@
                             <div class="price">
                                 <%=p.discounted_price%> TL
                             </div>
-                            <a href="/login"><button>Add to Cart</button></a>`
+                            <form action="/add-to-cart" method="POST">
+                                <input type="hidden" name="product_id" value="<%= p.product_id %>">
+
+                                <input type="number" name="quantity" value="1" min="1">
+
+                                <button type="submit">Add to Cart</button>
+                            </form>
                         </div>
                         <%})%>
                 </div>
@@ -105,7 +135,7 @@
                     }
                 }
 
-                const slideWidth = 340;
+                const slideWidth = 400;
                 slidesWrapper.style.transform = `translateX(-${currentOffset * slideWidth}px)`;
                 updateSlidePosition();
             }
@@ -117,13 +147,13 @@
             const menuButton = document.getElementById('menuButton');
             const dropdownList = document.getElementById('dropdownList');
 
-            
+
             menuButton.addEventListener('click', (event) => {
                 dropdownList.classList.toggle('show');
-                event.stopPropagation(); 
+                event.stopPropagation();
             });
 
-           
+
             window.addEventListener('click', () => {
                 if (dropdownList.classList.contains('show')) {
                     dropdownList.classList.remove('show');

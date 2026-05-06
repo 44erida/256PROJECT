@@ -249,7 +249,7 @@ button:hover {
 .slideshow-container {
     display: flex;
     align-items: center;
-    width: 1000px; 
+    width: 100%; 
     margin: 0 auto; 
     overflow: hidden; 
     position: relative;
@@ -264,7 +264,7 @@ button:hover {
 
 .slide {
     flex-shrink: 0;
-    width: 320px;
+    width: 400px;
     box-sizing: border-box; 
 }
 
@@ -326,16 +326,78 @@ button:hover {
     margin: 0 10px; 
 }
 
-h2>a>img{
+summary>h2>img{
     width: 30px;
     height: 30px;
 }
 
-body.seller {
-    display: flex;
 
+summary {
+    list-style: none;
+    cursor: pointer;
 }
 
+
+
+details {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+details>ul{
+    list-style-type: none;
+}
+
+
+.cart-container {
+    position: relative;
+    display: inline-block;
+}
+.cart-container>button{
+    background-color: transparent;
+    border: none;
+}
+.cart-container >button> img{
+    width: 2.5em;
+}
+.cart-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;     
+    top: 100%;    
+    background: white;
+    min-width: 300px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+
+.cart-container:hover .cart-dropdown {
+    display: block;
+}
+
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
 
 @keyframes glow {
   from {
