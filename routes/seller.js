@@ -94,4 +94,8 @@ router.post("/update/:id", async (req, res) => {
     console.log(id)
     res.redirect("seller-home")
 })
+
+router.get("/profile-settings", (req, res) => {
+    res.render("profile-settings")
+})
 export default router;
