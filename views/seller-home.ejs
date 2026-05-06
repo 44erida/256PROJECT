@@ -191,13 +191,15 @@
         <div class="user-profile">
             <img src="https://ui-avatars.com/api/?name=Satici&background=4f46e5&color=fff" alt="Profil">
             <div>
-                <span style="font-size: 14px; font-weight: 600;">Seller Name</span>
+                <span style="font-size: 14px; font-weight: 600;"><%= user.name%></span>
                 <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
             </div>
         </div>
         <div class="dropdown-content">
-            <a href="/profile-settings"><i class="fas fa-user-cog"></i> Update Profile</a>
-            <a href="/logout" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="/profile-settings?password"><i class="fas fa-user-cog"></i>Update Password</a>
+            <a href="/profile-settings?name"><i class="fas fa-user-cog"></i>Update Name</a>
+            <a href="/profile-settings?brand"><i class="fas fa-user-cog"></i>Update Brand Name</a>
+            <!-- <a href="/logout" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a> -->
         </div>
     </div>
 </div>

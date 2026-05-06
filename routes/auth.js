@@ -38,8 +38,7 @@ router.get("/login", (req, res) => {
 
 router.post("/login", async (req, res) => {
     const { email, password, remember } = req.body;
-    console.log(`Login denemesi - Email: ${email}, Remember: ${remember}`);
-
+    
     try {
         const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
         

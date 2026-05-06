@@ -99,14 +99,19 @@ router.post("/update/:id", async (req, res) => {
 })
 
 router.get("/profile-settings", (req, res) => {
-    res.render("profile-settings")
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    const request = req.query
+    console.log(request)
+    res.render("profile-settings", {user: req.session.user, info: null, isError: false})
 })
 
 router.post("/update-profile", async (req, res) => {
-    
     const { name, brand_name, oldPass, newPass } = req.body;
     const userId = req.session.user_id;
-
+    
+    
     try {
         
         const [users] = await db.query("SELECT * FROM users WHERE user_id = ?", [userId]);
