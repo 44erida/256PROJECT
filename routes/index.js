@@ -23,8 +23,9 @@ router.get("/dashboard", (req, res) => {
 
 router.get("/consumer-home", async (req, res) => {
     try {
+        const [products] = await db.query("select * from products");
         if (req.session.user) {
-            res.render("consumer-home", { user: req.session.user });
+            res.render("consumer-home", { user: req.session.user,products:products });
         } else {
             res.redirect("/login");
         }
@@ -34,8 +35,18 @@ router.get("/consumer-home", async (req, res) => {
     }
 });
 
-router.get("/cons-profile", (req, res) => {
-    res.render("cons-profile");
+router.get("/cons-profile", async(req, res) => {
+    try {
+        const [orders] = await db.query("select * from orders");
+        if (req.session.user) {
+            res.render("cons-profile", { user: req.session.user,orders:orders });
+        } else {
+            res.redirect("/login");
+        }
+    } catch (error) {
+        console.error("Consumer Home Hatası:", error);
+        res.status(500).send("There was an error: " + error.message);
+    }
 });
 
 router.get("/cons-settings", (req, res) => {

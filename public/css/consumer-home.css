@@ -51,23 +51,11 @@ header {
     border-bottom: 2px solid black;
 }   
 
-/* I specifically putted header-seller to not mix the header configurations (I think we should split css files) */
-.header-seller {
-    display: flex;
-    justify-content: space-between;
-    background-color: white;
-    border-bottom: 2px solid black;
-}   
-/* CSS cofiguration for the icon on the header in seller page */
-.icons-seller-header {
-    margin-right: 5px;
-    margin-top: 5px;
-}
-
 
 .header-container {
   display: flex;
   align-items: center;
+  padding: 10px;
   gap: 15px;
   background-color:#F8C8DC	;
   border-radius: 15px;
@@ -338,65 +326,10 @@ button:hover {
     margin: 0 10px; 
 }
 
-
-/*
-
-.main-container {
-    display: grid;
-    grid-template-columns: 3fr 1fr; 
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas:
-        "discounts rightnav"
-        "brands rightnav"
-        "products rightnav";
-    gap: 20px;
-    padding: 20px;
+h2>a>img{
+    width: 30px;
+    height: 30px;
 }
-
-.discounts-container {
-    grid-area: discounts;
-    min-height: 220px;
-    background-color: lightblue;
-    border-radius: 12px;
-}
-
-.brands-container {
-    grid-area: brands;
-    min-height: 100px;
-    background-color: lightgreen;
-    border-radius: 12px;
-}
-
-.products-container {
-    grid-area: products;
-    display: flex;
-    justify-content: space-between;
-    min-height: 300px;
-    background-color: lightcoral;
-    border-radius: 12px;
-}
-
-.product-card {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 200px;
-    border-radius: 5px;
-    margin: 5px;
-}
-
-.product-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-
-.right-nav {
-    grid-area: rightnav;
-    background-color: lightgray;
-    border-radius: 12px;
-    min-height: 100%;
-}
-*/
 
 body.seller {
     display: flex;
