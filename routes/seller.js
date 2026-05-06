@@ -92,26 +92,72 @@ router.get("/update/:id", async (req, res) => {
     }
 })
 
-router.post("/update/:id", async (req, res) => {
-    const id = req.params.id
-    console.log(id)
-    res.redirect("seller-home")
+router.post("/update/:id", upload.single("productImage"), async (req, res) => {
+    const productId = req.params.id;
+    const { title, oldP, newP, stock, type, tarih } = req.body;
+    
+     if (!title || title.trim() === "" || !oldP || oldP.trim() === ""
+||!newP || newP.trim() === "" || !stock ||stock.trim() === "" || !type ||type.trim() === ""
+||!tarih ||tarih.trim() === "") {
+        const [row] = await db.query("SELECT * FROM products WHERE product_id = ?", [productId]);
+        return res.render("update", {
+            pro: row[0],
+            info: "Lütfen tüm alanları doldurun!", 
+            isError: true 
+        });
+    }
+    try {
+        const [rows] = await db.query("SELECT image_path FROM products WHERE product_id = ?", [productId]);
+        let imagePath = rows[0].image_path;
+
+        if (req.file) {
+            imagePath = `/images/${req.file.filename}`;
+        }
+
+        await db.query(
+            `UPDATE products SET 
+                title = ?, 
+                normal_price = ?, 
+                discounted_price = ?, 
+                stock = ?, 
+                expiration_date = ?, 
+                image_path = ? 
+             WHERE product_id = ?`,
+            [title, oldP, newP, stock, tarih, imagePath, productId]
+        );
+
+        console.log("Ürün güncellendi, ID:", productId);
+        res.redirect("/seller-home");
+
+    } catch (error) {
+        console.error("Güncelleme Hatası:", error);
+        res.status(500).send("Güncelleme sırasında bir hata oluştu.");
+    }
 })
 
 router.get("/profile-settings", (req, res) => {
     if (!req.session.user) {
         return res.redirect("/login");
     }
-    const request = req.query
-    console.log(request)
+    
     res.render("profile-settings", {user: req.session.user, info: null, isError: false})
 })
 
 router.post("/update-profile", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    
     const { name, brand_name, oldPass, newPass } = req.body;
-    const userId = req.session.user_id;
-    
-    
+    const userId = req.session.user.user_id;
+   
+    if (!name || name.trim() === "" || !brand_name || brand_name.trim() === "") {
+        return res.render("profile-settings", {
+            info: "Lütfen adınızı ve marka adını boş bırakmayın!",
+            isError: true,
+            user: req.session.user
+        });
+    }
     try {
         
         const [users] = await db.query("SELECT * FROM users WHERE user_id = ?", [userId]);
@@ -120,7 +166,7 @@ router.post("/update-profile", async (req, res) => {
         
         if (oldPass && newPass) {
             
-            const isMatch = await bcrypt.compare(oldPass, user.password);
+            const isMatch = await bcrypt.compare(oldPass, user.password_hash);
 
             if (!isMatch) {
                 return res.render("profile-settings", { 
@@ -134,7 +180,7 @@ router.post("/update-profile", async (req, res) => {
             const hashedPass = await bcrypt.hash(newPass, salt);
 
             await db.query(
-                "UPDATE users SET name = ?,  password = ? WHERE user_id = ?",
+                "UPDATE users SET name = ?,  password_hash = ? WHERE user_id = ?",
                 [name, hashedPass, userId]
             );
         } else {
