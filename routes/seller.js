@@ -2,8 +2,11 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import db from '../db.js';
-
+import bcrypt from "bcrypt"
 const router = express.Router();
+router.use(express.json())
+router.use(express.urlencoded({extended: true}))
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -98,4 +101,68 @@ router.post("/update/:id", async (req, res) => {
 router.get("/profile-settings", (req, res) => {
     res.render("profile-settings")
 })
+
+router.post("/update-profile", async (req, res) => {
+    // Formdaki 'name' değerleri ile buradaki değişken isimleri aynı olmalı
+    const { name, brand_name, oldPass, newPass } = req.body;
+    const userId = req.session.user_id;
+
+    try {
+        // 1. Kullanıcıyı ve mevcut şifresini getir
+        const [users] = await db.query("SELECT * FROM users WHERE user_id = ?", [userId]);
+        const user = users[0];
+
+        // 2. Şifre değiştirme isteği var mı?
+        if (oldPass && newPass) {
+            // Şifre kontrolü
+            const isMatch = await bcrypt.compare(oldPass, user.password);
+
+            if (!isMatch) {
+                return res.render("profile-settings", { 
+                    info: "Mevcut şifreniz hatalı!", 
+                    isError: true,
+                    user: req.session.user 
+                });
+            }
+
+            // Şifre doğruysa: Yeni şifreyi hashle ve her şeyi güncelle
+            const salt = await bcrypt.genSalt(10);
+            const hashedPass = await bcrypt.hash(newPass, salt);
+
+            await db.query(
+                "UPDATE users SET name = ?,  password = ? WHERE user_id = ?",
+                [name, hashedPass, userId]
+            );
+        } else {
+            // Şifre değiştirme isteği yoksa: Sadece isim ve email güncelle
+            await db.query(
+                "UPDATE users SET name = ? WHERE user_id = ?",
+                [name, userId]
+            );
+        }
+
+        // 3. Market ismini güncelle (Ayrı tablo olduğu için her durumda çalışabilir)
+        if (brand_name) {
+            await db.query(
+                "UPDATE market_profiles SET market_name = ? WHERE user_id = ?", 
+                [brand_name, userId]
+            );
+        }
+
+        // 4. Session'ı güncelle (Arayüzde ismin anlık değişmesi için)
+        req.session.user.name = name;
+
+        res.render("profile-settings", { 
+            info: "Profiliniz başarıyla güncellendi.", 
+            isError: false,
+            user: req.session.user 
+        });
+
+    } catch (error) {
+        console.error("Güncelleme hatası:", error);
+        res.status(500).send("Sunucu hatası oluştu.");
+    }
+});
+
+
 export default router;
