@@ -1,16 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/consumer-home.css">
+    <title>User Settings</title>
+    <link rel="stylesheet" href="/css/cons-settings.css">
 </head>
+
 <body>
-    <h1>Consumer settings</h1>
-    <h2><a href="">Change email</a></h2>
-    <h2><a href="">Change password</a></h2>
-    <h2><a href="">Forgot password</a></h2>
-    <h2><a href="">Delete account</a></h2>
+
+    <header class="header-container">
+        <div class="logo-container">
+            <a href="/consumer-home"><img src="/images/logo.png" alt="logo"></a>
+            <div class="plaster-logo">TurnaSold</div>
+        </div>
+
+        <div class="welcome-msg">
+            <h3>Your account: <%=userInfo.email%>
+            </h3>
+        </div>
+
+        <div class="profile-container">
+            <div class="dropdown">
+                <button class="dropdown-btn" id="menuButton">
+                    <img src="/icons/menu-icon.png">
+                </button>
+                <ul class="dropdown-content" id="dropdownList">
+                    <li><a href="/cons-profile"><img src="/icons/profile.svg">Profile</a></li>
+                    <li><a href="/cons-settings"><img src="/icons/settings.png">Settings</a></li>
+                    <li>
+                        <hr>
+                    </li>
+                    <li><a href="/"><img src="/icons/logout.png">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="settings-container">
+        <h1>Account Settings</h1>
+
+        <% if (message && message !=="success" ) { %>
+            <p class="error-msg">
+                <%= message %>
+            </p>
+            <% } %>
+
+                <div class="settings-card">
+                    <button type="button" onclick="showSection('password-section')">
+                        Change password
+                    </button>
+
+                    <div id="password-section" class="settings-section">
+                        <form action="/cons-settings/change-password" method="POST">
+                            <label>Old password:</label>
+                            <input type="password" name="oldPassword" required>
+
+                            <label>New password:</label>
+                            <input type="password" name="newPassword" required>
+
+                            <label>Confirm new password:</label>
+                            <input type="password" name="confirmPassword" required>
+
+                            <button type="submit">Save password</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <button type="button" onclick="showSection('email-section')">
+                        Change email
+                    </button>
+
+                    <div id="email-section" class="settings-section">
+                        <form action="/cons-settings/change-email" method="POST">
+
+                            <label>New email:</label>
+                            <input type="email" name="newEmail" required>
+
+                            <label>Password:</label>
+                            <input type="password" name="password" required>
+
+                            <button type="submit">Send verification code</button>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card danger-card">
+                    <button type="button" onclick="showSection('delete-section')">
+                        Delete account
+                    </button>
+
+                    <div id="delete-section" class="settings-section">
+                        <form action="/cons-settings/delete-account" method="POST">
+                            <p>This will permanently delete your account.</p>
+
+                            <label>Password:</label>
+                            <input type="password" name="password" required>
+
+                            <button type="submit">Delete account</button>
+                        </form>
+                    </div>
+                </div>
+    </main>
+
+    <script>
+        // This function shows the animation of the menu options
+        function showSection(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle("show");
+        }
+
+        // 
+        const menuButton = document.getElementById('menuButton');
+        const dropdownList = document.getElementById('dropdownList');
+
+
+        menuButton.addEventListener('click', (event) => {
+            dropdownList.classList.toggle('show');
+            event.stopPropagation();
+        });
+
+
+        window.addEventListener('click', () => {
+            if (dropdownList.classList.contains('show')) {
+                dropdownList.classList.remove('show');
+            }
+        });
+    </script>
 </body>
+
 </html>
