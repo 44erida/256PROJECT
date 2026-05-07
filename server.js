@@ -10,6 +10,7 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use(express.json()); //added this for ajax
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({

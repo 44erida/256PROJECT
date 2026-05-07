@@ -399,6 +399,15 @@ details>ul{
     object-fit: cover;
 }
 
+.item-details>img{
+    justify-self: center;
+}
+
+.item-quantity{
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
 @keyframes glow {
   from {
     text-shadow: 0 0 10px #0d0d91, 0 0 20px #6da5e0, 0 0 30px #27c99e;
