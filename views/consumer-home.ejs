@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turnasold | Main</title>
     <link rel="stylesheet" href="/css/consumer-home.css">
+
 </head>
 
 <body>
@@ -31,28 +32,42 @@
 
                 <button class="cart-icon">
                     <img src="/icons/basket.png" alt="Cart">
-                    <span class="cart-count" style="color: black;"><%=items.length%></span>
+                    <span class="cart-count" style="color: black;">
+                        <%=items.length%>
+                    </span>
                 </button>
+
                 <div class="cart-dropdown">
                     <ul class="cart-items">
                         <%items.forEach(i=>{%>
-                        <li class="cart-item">
-                            <img src="<%=i.image_path%>" alt="<%=i.title%>">
-                            <div class="item-details">
-                                <p class="item-name"><%=i.title%></p>
-                                <p class="item-price"><%=i.total_item_price%></p>
-                                <div class="item-quantity">
-                                <img style="height: 19px; width: 19px;"  src="/icons/minus.png">
-                                <p> <%=i.quantity%> </p>
-                                <img style="height: 20px; width: 20px;" src="/icons/plus2.png">
+                            <li class="cart-item" data-id="<%=i.product_id%>">
+                                <img src="<%=i.image_path%>" alt="<%=i.title%>">
+                                <div class="item-details">
+                                    <p class="item-name">
+                                        <%=i.title%>
+                                    </p>
+                                    <p class="item-price">
+                                        <%=i.total_item_price%>
+                                    </p>
+                                    <div class="item-quantity">
+                                        <img class="btn-minus" style="height: 19px; width: 19px; cursor: pointer;"
+                                            src="/icons/minus.png">
+                                        <p>
+                                            <%=i.quantity%>
+                                        </p>
+                                        <img class="btn-plus" style="height: 20px; width: 20px; cursor: pointer;"
+                                            src="/icons/plus2.png">
+                                    </div>
+                                    <img class="btn-delete" style="height: 30px; width: 30px; cursor: pointer;"
+                                        src="/icons/trashbin.png">
                                 </div>
-                                <img style="height: 30px; width: 30px;" src="/icons/trashbin.png">
-                            </div>
-                        </li>
-                        <%})%>
+                            </li>
+                            <%})%>
                     </ul>
-                    <div class="cart-footer">
-                        <a href="/checkout" class="checkout-btn">Go to Checkout</a>
+                    <div class="purchase-btn cart-item" data-id="-1">
+                        <button>
+                            Purchase
+                        </button>
                     </div>
                 </div>
             </div>
@@ -90,7 +105,7 @@
                             <div class="price">
                                 <%=p.discounted_price%> TL
                             </div>
-                            <form action="/add-to-cart" method="POST">
+                            <form action="/add-to-cart" method="POST" class="add-to-cart-form">
                                 <input type="hidden" name="product_id" value="<%= p.product_id %>">
 
                                 <input type="number" name="quantity" value="1" min="1">
@@ -109,72 +124,177 @@
             </div>
         </section>
 
-        <script>
-            let currentOffset = 0;
-            const slides = document.querySelectorAll('.slide');
-            const slidesWrapper = document.querySelector('.slides-wrapper');
-            const totalSlides = slides.length;
-            const slidesToShow = 3;
-            const slidePosition = document.getElementById('slidePosition');
 
-            function updateSlidePosition() {
-                const startSlide = currentOffset + 1;
-                const endSlide = Math.min(currentOffset + slidesToShow, totalSlides);
-                slidePosition.textContent = `${startSlide}-${endSlide} of ${totalSlides}`;
-            }
-
-            function changeSlide(direction) {
-                const maxOffset = Math.max(0, totalSlides - slidesToShow);
-
-                if (direction === 1) {
-                    if (currentOffset < maxOffset) {
-                        currentOffset++;
-                    } else {
-                        currentOffset = 0;
-                    }
-                } else {
-                    if (currentOffset > 0) {
-                        currentOffset--;
-                    } else {
-                        currentOffset = maxOffset;
-                    }
-                }
-
-                const slideWidth = 400;
-                slidesWrapper.style.transform = `translateX(-${currentOffset * slideWidth}px)`;
-                updateSlidePosition();
-            }
-
-
-            updateSlidePosition();
-
-
-            const menuButton = document.getElementById('menuButton');
-            const dropdownList = document.getElementById('dropdownList');
-
-
-            menuButton.addEventListener('click', (event) => {
-                dropdownList.classList.toggle('show');
-                event.stopPropagation();
-            });
-
-
-            window.addEventListener('click', () => {
-                if (dropdownList.classList.contains('show')) {
-                    dropdownList.classList.remove('show');
-                }
-            });
-        </script>
 
     </main>
-
-
-
     <footer>
 
     </footer>
+
+
+    <script>
+        let currentOffset = 0;
+        const slides = document.querySelectorAll('.slide');
+        const slidesWrapper = document.querySelector('.slides-wrapper');
+        const totalSlides = slides.length;
+        const slidesToShow = 3;
+        const slidePosition = document.getElementById('slidePosition');
+
+        function updateSlidePosition() {
+            const startSlide = currentOffset + 1;
+            const endSlide = Math.min(currentOffset + slidesToShow, totalSlides);
+            slidePosition.textContent = `${startSlide}-${endSlide} of ${totalSlides}`;
+        }
+
+        function changeSlide(direction) {
+            const maxOffset = Math.max(0, totalSlides - slidesToShow);
+
+            if (direction === 1) {
+                if (currentOffset < maxOffset) {
+                    currentOffset++;
+                } else {
+                    currentOffset = 0;
+                }
+            } else {
+                if (currentOffset > 0) {
+                    currentOffset--;
+                } else {
+                    currentOffset = maxOffset;
+                }
+            }
+
+            const slideWidth = 400;
+            slidesWrapper.style.transform = `translateX(-${currentOffset * slideWidth}px)`;
+            updateSlidePosition();
+        }
+
+
+        updateSlidePosition();
+
+
+        const menuButton = document.getElementById('menuButton');
+        const dropdownList = document.getElementById('dropdownList');
+
+
+        menuButton.addEventListener('click', (event) => {
+            dropdownList.classList.toggle('show');
+            event.stopPropagation();
+        });
+
+
+        window.addEventListener('click', () => {
+            if (dropdownList.classList.contains('show')) {
+                dropdownList.classList.remove('show');
+            }
+        });
+
+
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const data = {
+                    product_id: formData.get('product_id'),
+                    quantity: 1
+                };
+
+                try {
+                    const response = await fetch('/add-to-cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        updateCart(result.items);
+                    }
+                } catch (err) {
+                    console.error("AJAX Error:", err);
+                }
+            });
+        });
+
+        function updateCart(items) {
+            const cartList = document.querySelector('.cart-items');
+            const cartIcon = document.querySelector('.cart-icon')
+            if (!cartList) return;
+            cartList.innerHTML = '';
+
+            cartIcon.innerHTML = '';
+            cartIcon.innerHTML += ` 
+            <img src="/icons/basket.png" alt="Cart">
+            <span class="cart-count" style="color: black;">
+                ${items.length}
+            </span>`
+            items.forEach(item => {
+                cartList.innerHTML += `
+            <li class="cart-item" data-id="${item.product_id}">
+                <img src="${item.image_path}" alt="${item.title}">
+                <div class="item-details">
+                    <p class="item-name">${item.title}</p>
+                    <p class="item-price">${item.total_item_price}</p>
+                    <div class="item-quantity">
+                        <img  class="btn-minus" style="height: 19px; width: 19px;" src="/icons/minus.png">
+                        <p>${item.quantity}</p>
+                        <img  class="btn-plus" style="height: 20px; width: 20px;" src="/icons/plus2.png">
+                    </div>
+                    <img  class="btn-delete" style="height: 30px; width: 30px;" src="/icons/trashbin.png">
+                </div>
+            </li>`;
+            });
+        }
+
+
+        const cartContainer = document.querySelector('.cart-dropdown');
+
+        cartContainer.addEventListener('click', async (e) => {
+
+            const itemRow = e.target.closest('.cart-item');
+            if (!itemRow) return;
+            const productId = itemRow.dataset.id;
+
+            let endpoint = '';
+            let bodyData = { product_id: productId };
+
+            if (productId === "-1") {
+                endpoint = '/clear-cart';
+            }
+            else if (e.target.classList.contains('btn-plus')) {
+                endpoint = '/update-quantity';
+                bodyData.action = 'inc';
+            } else if (e.target.classList.contains('btn-minus')) {
+                endpoint = '/update-quantity';
+                bodyData.action = 'dec';
+            } else if (e.target.classList.contains('btn-delete')) {
+                endpoint = '/remove-item';
+            } 
+            else {
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyData)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    updateCart(result.items);
+                    document.querySelector('.cart-count').innerText = result.items.length;
+                }
+            } catch (err) {
+                console.error("Cart update failed", err);
+            }
+        });
+
+
+    </script>
+
 </body>
-
-
 
 </html>

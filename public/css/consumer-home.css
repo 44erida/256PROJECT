@@ -408,6 +408,16 @@ details>ul{
     flex-direction: row;
     gap: 3px;
 }
+
+.item-quantity>button{
+    background-color: transparent;
+    border: none;
+}
+
+.item-details>button{
+    background-color: transparent;
+    border: none;
+}
 @keyframes glow {
   from {
     text-shadow: 0 0 10px #0d0d91, 0 0 20px #6da5e0, 0 0 30px #27c99e;

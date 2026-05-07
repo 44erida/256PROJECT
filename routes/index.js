@@ -97,10 +97,104 @@ router.post('/add-to-cart', async (req, res) => {
             [cart_id, product_id, quantity, quantity]
         );
 
-        res.redirect('/consumer-home');
+        const [updatedItems] = await db.query(`
+            SELECT p.product_id, p.title, p.discounted_price, p.image_path, ci.quantity,
+            (p.discounted_price * ci.quantity) AS total_item_price
+            FROM cart_items ci
+            JOIN products p ON ci.product_id = p.product_id
+            WHERE ci.cart_id = ?`, [cart_id]);
+
+        // ajax line
+        res.json({ success: true, items: updatedItems });
     } catch (error) {
         console.error(error);
         res.status(500).send("Could not add item to cart");
+    }
+});
+
+
+router.post('/update-quantity', async (req, res) => {
+    const { product_id, action } = req.body;
+    const user_id = req.session.user.user_id;
+
+    const change = (action === 'inc') ? 1 : -1;
+
+    try {
+        await db.query(`
+            UPDATE cart_items ci
+            JOIN carts c ON ci.cart_id = c.cart_id
+            JOIN consumer_profiles cp ON c.consumer_id = cp.consumer_id
+            SET ci.quantity = GREATEST(1, ci.quantity + ?)
+            WHERE cp.user_id = ? AND ci.product_id = ?`,
+            [change, user_id, product_id]);
+
+        const query = `
+            SELECT p.product_id, p.title, p.discounted_price, p.image_path, ci.quantity,
+            (p.discounted_price * ci.quantity) AS total_item_price
+            FROM cart_items ci
+            JOIN products p ON ci.product_id = p.product_id
+            JOIN carts c ON ci.cart_id = c.cart_id
+            JOIN consumer_profiles cp ON c.consumer_id = cp.consumer_id
+            WHERE cp.user_id = ?
+        `;
+
+        const [items] = await db.query(query, [user_id]);
+        res.json({ success: true, items });
+    } catch (err) {
+        console.error("SERVER CRASH:", err);
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post('/remove-item', async (req, res) => {
+    const { product_id } = req.body;
+    const user_id = req.session.user.user_id;
+
+    try {
+        await db.query(`
+            DELETE ci FROM cart_items ci
+            JOIN carts c ON ci.cart_id = c.cart_id
+            JOIN consumer_profiles cp ON c.consumer_id = cp.consumer_id
+            WHERE cp.user_id = ? AND ci.product_id = ?`,
+            [user_id, product_id]);
+
+        const query = `
+            SELECT p.product_id, p.title, p.discounted_price, p.image_path, ci.quantity,
+            (p.discounted_price * ci.quantity) AS total_item_price
+            FROM cart_items ci
+            JOIN products p ON ci.product_id = p.product_id
+            JOIN carts c ON ci.cart_id = c.cart_id
+            JOIN consumer_profiles cp ON c.consumer_id = cp.consumer_id
+            WHERE cp.user_id = ?
+        `;
+        const [items] = await db.query(query, [user_id]);
+        res.json({ success: true, items });
+    } catch (err) {
+        console.error("SERVER CRASH:", err);
+        res.status(500).json({ success: false });
+    }
+});
+
+
+router.post('/clear-cart', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, error: "Please log in first" });
+    }
+
+    const user_id = req.session.user.user_id;
+
+    try {
+        await db.query(`
+            DELETE ci FROM cart_items ci
+            JOIN carts c ON ci.cart_id = c.cart_id
+            JOIN consumer_profiles cp ON c.consumer_id = cp.consumer_id
+            WHERE cp.user_id = ?`, 
+            [user_id]
+        );
+        res.json({ success: true, items: [] });
+    } catch (err) {
+        console.error("Clear cart error:", err);
+        res.status(500).json({ success: false, error: "Could not complete purchase" });
     }
 });
 
