@@ -12,6 +12,8 @@
             position: relative;
             display: inline-block;
             cursor: pointer;
+            padding-bottom: 15px; 
+            margin-bottom: -15px;
         }
 
         .dropdown-content {
@@ -20,11 +22,10 @@
             right: 0;
             top: 100%;
             background-color: #fff;
-            min-width: 180px;
+            min-width: 200px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
             z-index: 100;
             border-radius: 8px;
-            margin-top: 10px;
             border: 1px solid #eee;
             overflow: hidden;
         }
@@ -196,10 +197,9 @@
             </div>
         </div>
         <div class="dropdown-content">
-            <a href="/profile-settings?password"><i class="fas fa-user-cog"></i>Update Password</a>
-            <a href="/profile-settings?name"><i class="fas fa-user-cog"></i>Update Name</a>
-            <a href="/profile-settings?brand"><i class="fas fa-user-cog"></i>Update Brand Name</a>
-            <!-- <a href="/logout" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a> -->
+            <a href="/edit-info"><i class="fas fa-user-edit"></i> Bilgileri Güncelle</a>
+            <a href="/edit-password"><i class="fas fa-key"></i> Şifre Değiştir</a>
+            <a href="/edit-address"><i class="fas fa-map-marker-alt"></i> Adres Güncelle</a>
         </div>
     </div>
 </div>

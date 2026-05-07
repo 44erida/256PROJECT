@@ -3,10 +3,10 @@ import multer from 'multer';
 import path from 'path';
 import db from '../db.js';
 import bcrypt from "bcrypt"
+
 const router = express.Router();
 router.use(express.json())
 router.use(express.urlencoded({extended: true}))
-
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -22,10 +22,11 @@ router.get("/seller-home", async (req, res) => {
     if (req.session.user) {
         console.log("Seller Home Girişi - user_id: " + req.session.user.user_id);
         
-        const [marketRows] = await db.query("SELECT market_id FROM market_profiles WHERE user_id = ?", [req.session.user.user_id]);
+        const [marketRows] = await db.query("SELECT market_id, market_name FROM market_profiles WHERE user_id = ?", [req.session.user.user_id]);
         
         let products = [];
         if(marketRows.length > 0) {
+            req.session.user.brand_name = marketRows[0].market_name;
             [products] = await db.query("SELECT * FROM products WHERE market_id = ?", [marketRows[0].market_id]);
         }
         
@@ -135,82 +136,69 @@ router.post("/update/:id", upload.single("productImage"), async (req, res) => {
     }
 })
 
-router.get("/profile-settings", (req, res) => {
+router.get("/edit-info", (req, res) => {
     if (!req.session.user) {
         return res.redirect("/login");
     }
-    
-    res.render("profile-settings", {user: req.session.user, info: null, isError: false})
-})
+    res.render("seller-edit-info", { user: req.session.user, info: null, isError: false });
+});
 
-router.post("/update-profile", async (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/login");
-    }
-    
-    const { name, brand_name, oldPass, newPass } = req.body;
+router.post("/update-info", async (req, res) => {
+    const { name, brand_name } = req.body;
     const userId = req.session.user.user_id;
-   
-    if (!name || name.trim() === "" || !brand_name || brand_name.trim() === "") {
-        return res.render("profile-settings", {
-            info: "Lütfen adınızı ve marka adını boş bırakmayın!",
-            isError: true,
-            user: req.session.user
-        });
-    }
     try {
-        
-        const [users] = await db.query("SELECT * FROM users WHERE user_id = ?", [userId]);
-        const user = users[0];
-
-        
-        if (oldPass && newPass) {
-            
-            const isMatch = await bcrypt.compare(oldPass, user.password_hash);
-
-            if (!isMatch) {
-                return res.render("profile-settings", { 
-                    info: "Mevcut şifreniz hatalı!", 
-                    isError: true,
-                    user: req.session.user 
-                });
-            }
-
-           const salt = await bcrypt.genSalt(10);
-            const hashedPass = await bcrypt.hash(newPass, salt);
-
-            await db.query(
-                "UPDATE users SET name = ?,  password_hash = ? WHERE user_id = ?",
-                [name, hashedPass, userId]
-            );
-        } else {
-            await db.query(
-                "UPDATE users SET name = ? WHERE user_id = ?",
-                [name, userId]
-            );
-        }
-
-         if (brand_name) {
-            await db.query(
-                "UPDATE market_profiles SET market_name = ? WHERE user_id = ?", 
-                [brand_name, userId]
-            );
-        }
-
-       
+        await db.query("UPDATE users SET name = ? WHERE user_id = ?", [name, userId]);
+        await db.query("UPDATE market_profiles SET market_name = ? WHERE user_id = ?", [brand_name, userId]);
         req.session.user.name = name;
-
-        res.render("profile-settings", { 
-            info: "Profiliniz başarıyla güncellendi.", 
-            isError: false,
-            user: req.session.user 
-        });
-
+        req.session.user.brand_name = brand_name;
+        res.render("seller-edit-info", { info: "Bilgiler başarıyla güncellendi.", isError: false, user: req.session.user });
     } catch (error) {
-        console.error("Güncelleme hatası:", error);
-        res.status(500).send("Sunucu hatası oluştu.");
+        res.render("seller-edit-info", { info: "Bir hata oluştu.", isError: true, user: req.session.user });
     }
 });
 
+router.get("/edit-password", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render("seller-edit-password", { info: null, isError: false });
+});
+
+router.post("/update-password", async (req, res) => {
+    const { oldPass, newPass } = req.body;
+    const userId = req.session.user.user_id;
+    try {
+        const [users] = await db.query("SELECT password_hash FROM users WHERE user_id = ?", [userId]);
+        const isMatch = await bcrypt.compare(oldPass, users[0].password_hash);
+        
+        if (!isMatch) {
+            return res.render("seller-edit-password", { info: "Mevcut şifre hatalı!", isError: true });
+        }
+
+        const hashedPass = await bcrypt.hash(newPass, 10);
+        await db.query("UPDATE users SET password_hash = ? WHERE user_id = ?", [hashedPass, userId]);
+        res.render("seller-edit-password", { info: "Şifre başarıyla güncellendi.", isError: false });
+    } catch (error) {
+        res.render("seller-edit-password", { info: "Şifre güncellenirken hata oluştu.", isError: true });
+    }
+});
+
+router.get("/edit-address", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render("seller-edit-address", { info: null, isError: false });
+});
+
+router.post("/update-address", async (req, res) => {
+    const { city, district } = req.body;
+    const userId = req.session.user.user_id;
+    try {
+        await db.query("UPDATE market_profiles SET city = ?, district = ? WHERE user_id = ?", [city, district, userId]);
+        res.render("seller-edit-address", { info: "Adres bilgileri güncellendi.", isError: false });
+    } catch (error) {
+        res.render("seller-edit-address", { info: "Adres güncellenirken hata oluştu.", isError: true });
+    }
+});
 
 export default router;

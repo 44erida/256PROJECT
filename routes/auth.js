@@ -100,8 +100,8 @@ router.post("/seller-register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         const [result] = await db.query(
-            `INSERT INTO users (email, password_hash, role, is_verified) VALUES (?, ?, 'market', FALSE)`,
-            [email, hashedPassword]
+            `INSERT INTO users (email, password_hash, role, is_verified, name) VALUES (?, ?, 'market', FALSE, ?)`,
+            [email, hashedPassword, name]
         );
         
         const userId = result.insertId;
@@ -128,8 +128,8 @@ router.post("/user-register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         
         const [result] = await db.query(
-            `INSERT INTO users (email, password_hash, role, is_verified) VALUES (?, ?, 'consumer', FALSE)`,
-            [email, hashedPassword]
+            `INSERT INTO users (email, password_hash, role, is_verified, name) VALUES (?, ?, 'market', FALSE, ?)`,
+            [email, hashedPassword, name]
         );
         
         const userId = result.insertId;

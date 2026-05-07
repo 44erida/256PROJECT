@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil Bilgilerini Düzenle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #333; text-align: center; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #666; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
+        button:hover { background-color: #218838; }
+        .info { text-align: center; padding: 10px; border-radius: 6px; margin-bottom: 1rem; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .success { background-color: #d4edda; color: #155724; }
+        .back-link { display: block; text-align: center; margin-top: 1rem; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Genel Bilgiler</h2>
+        <% if (info) { %>
+            <div class="info <%= isError ? 'error' : 'success' %>"><%= info %></div>
+        <% } %>
+        <form action="/update-info" method="POST">
+            <div class="form-group">
+                <label>Adınız</label>
+                <input type="text" name="name" value="<%= user.name %>" required>
+            </div>
+            <div class="form-group">
+                <label>Mağaza/Marka Adı</label>
+                <input type="text" name="brand_name" placeholder="Mağaza adınız" required>
+            </div>
+            <button type="submit">Güncelle</button>
+        </form>
+        <a href="/seller-home" class="back-link">Panele Dön</a>
+    </div>
+</body>
+</html>
