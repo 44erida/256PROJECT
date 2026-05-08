@@ -222,4 +222,37 @@ router.post("/update-address", async (req, res) => {
     }
 });
 
+router.post("/delete/:id", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    const productId = req.params.id;
+    const userId = req.session.user.user_id;
+
+    try {
+        const [marketRows] = await db.query(
+            "SELECT market_id FROM market_profiles WHERE user_id = ?", 
+            [userId]
+        );
+
+        if (marketRows.length > 0) {
+            const marketId = marketRows[0].market_id;
+
+            await db.query(
+                "DELETE FROM products WHERE product_id = ? AND market_id = ?",
+                [productId, marketId]
+            );
+            
+            console.log("Ürün silindi, ID:", productId);
+        }
+
+        res.redirect("/seller-home");
+
+    } catch (error) {
+        console.error("Silme Hatası:", error);
+        res.status(500).send("Silme işlemi sırasında bir hata oluştu.");
+    }
+});
+
 export default router;
