@@ -48,7 +48,6 @@ body{
 header {
     display: flex;
     background-color: white;
-    border-bottom: 2px solid black;
 }   
 
 /* I specifically putted header-seller to not mix the header configurations (I think we should split css files) */

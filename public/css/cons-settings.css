@@ -19,7 +19,6 @@ body {
 header {
     display: flex;
     background-color: white;
-    border-bottom: 2px solid black;
 }
 
 .header-container {
