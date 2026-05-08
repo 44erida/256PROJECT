@@ -1,28 +1,35 @@
-import express from 'express';
-import db from '../db.js';
-import bcrypt from 'bcrypt'
-import 'dotenv/config'; 
+import express from "express";
+import db from "../db.js";
+import bcrypt from "bcrypt"
+import "dotenv/config"; 
 const router = express.Router();
 
 // Mail verification function from Merve
-async function sendVerifyEmail(email, token) {
-    console.log("-----------------------");
-    console.log(`GİDEN MAİL: ${email}`);
-    console.log(`DOĞRULAMA KODU: ${token}`);
-    console.log("-----------------------");
+// async function sendVerifyEmail(email, token) {
+//     console.log("-----------------------");
+//     console.log(`GİDEN MAİL: ${email}`);
+//     console.log(`DOĞRULAMA KODU: ${token}`);
+//     console.log("-----------------------");
 
-    try {
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Doğrulama Kodunuz",
-            text: `Kodunuz: ${token}`
-        });
-        console.log("Mail başarıyla gönderildi!");
-    } catch (error) {
-        console.error("MAİL GÖNDERME HATASI:", error.message);
+//     try {
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: "Doğrulama Kodunuz",
+//             text: `Kodunuz: ${token}`
+//         });
+//         console.log("Mail başarıyla gönderildi!");
+//     } catch (error) {
+//         console.error("MAİL GÖNDERME HATASI:", error.message);
+//     }
+// }
+const transporter = nodemailer.createTransport({
+    service: "gmail",  // veya başka bir servis
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS   // Gmail App Password
     }
-}
+});
 
 router.get("/", async (req, res) => {
     try {
