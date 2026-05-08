@@ -4,6 +4,15 @@ import bcrypt from 'bcrypt'
 
 const router = express.Router();
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  secure: true, 
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
 // Mail verification function from Merve
 async function sendVerifyEmail(email, token) {
     console.log("-----------------------");
@@ -16,8 +25,7 @@ async function sendVerifyEmail(email, token) {
             from: process.env.EMAIL_USER,
             to: email,
             subject: "Doğrulama Kodunuz",
-            text: `Kodunuz: ${token}`,
-            pass: process.env.EMAIL_PASS
+            text: `Kodunuz: ${token}`
         });
         console.log("Mail başarıyla gönderildi!");
     } catch (error) {
