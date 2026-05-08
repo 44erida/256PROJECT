@@ -16,7 +16,7 @@ async function sendVerifyEmail(email, token) {
             from: process.env.EMAIL_USER,
             to: email,
             subject: "Doğrulama Kodunuz",
-            text: `Kodunuz: ${token}`
+            text: `Kodunuz: ${token}`,
             pass: process.env.EMAIL_PASS
         });
         console.log("Mail başarıyla gönderildi!");
