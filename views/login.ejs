@@ -3,42 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        fieldset {border-radius: 5px; width: max-content; margin: 30px auto; padding: 20px; }
-        p { color: red; text-align: center; }
-        img { width: 500px; border-radius: 5px;}
-        
-    </style>
+    <title>TurnaSold | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plaster&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-    <header class="header-container">
-        <div class="logo-container">
-            <a href="/"><img src="/images/logo.png" alt="logo"></a>
-            <div class="plaster-logo">TurnaSold Seller</div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="brand-logo">
+                <a href="/"><img src="/images/logo.png" alt="TurnaSold Logo"></a>
+                <div class="plaster-logo">TurnaSold</div>
+            </div>
+            
+            <h2>Welcome Back!</h2>
+            <p>Please enter your details to sign in.</p>
+
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="error-msg"><%= message %></div>
+            <% } %>
+
+            <form action="/login" method="POST">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" placeholder="example@mail.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="options">
+                    <label class="remember-me">
+                        <input type="checkbox"> Remember Me
+                    </label>
+                    <a href="#" class="forgot-pwd">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+
+            <div class="register-link">
+                Don't have an account? 
+                <br>
+                <a href="/user-register">Customer Sign Up</a> or <a href="/seller-register">Seller Sign Up</a>
+            </div>
         </div>
-    </header>
-    <form action="/login" method="POST">
-        <fieldset>
-            <img src="/images/goose-wallpaper.webp" alt="">
-            <br><br>
-            <legend>Login</legend>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" required>
-            <br><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <br><br>
-            <label for="remember">Remember me:</label>
-            <input type="checkbox" id="remember" name="remember">
-            <br><br>
-            <button type="submit">Login</button>
-        </fieldset>
-    </form>
-    <p>First time? Please 
-        <a href="/seller-register">Register</a>
-    </p>
-    <a href="/user-register"><p>Register as User</p></a>
+    </div>
+
 </body>
 </html>

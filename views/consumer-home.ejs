@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turnasold | Main</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plaster&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/consumer-home.css">
-
 </head>
 
 <body>
@@ -17,114 +17,107 @@
         </div>
 
         <div class="search-bar">
-            <form action="/consumer-home" method="GET" style="display: flex; align-items: center; width: 100%;">
+            <form action="/consumer-home" method="GET">
                 <input type="text" name="search" placeholder="Search for product..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
-                <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0;">
+                <button type="submit">
                     <img src="/icons/search_logo.png" alt="Search">
                 </button>
             </form>
         </div>
 
-        <div class="welcome-msg">
-            <h3>Welcome <%=consumer[0].full_name%>
-            </h3>
-        </div>
-        <div class="profile-container">
-            <div class="cart-container">
+        <div class="header-right">
+            <div class="welcome-msg">
+                Welcome, <span><%=consumer[0].full_name%></span>
+            </div>
+            
+            <div class="profile-container">
+                <div class="cart-container">
+                    <button class="cart-icon">
+                        <img src="/icons/basket.png" alt="Cart">
+                        <span class="cart-count"><%=items.length%></span>
+                    </button>
 
-                <button class="cart-icon">
-                    <img src="/icons/basket.png" alt="Cart">
-                    <span class="cart-count" style="color: black;">
-                        <%=items.length%>
-                    </span>
-                </button>
-
-                <div class="cart-dropdown">
-                    <ul class="cart-items">
-                        <%items.forEach(i=>{%>
-                            <li class="cart-item" data-id="<%=i.product_id%>">
-                                <img src="<%=i.image_path%>" alt="<%=i.title%>">
-                                <div class="item-details">
-                                    <p class="item-name">
-                                        <%=i.title%>
-                                    </p>
-                                    <p class="item-price">
-                                        <%=i.total_item_price%>
-                                    </p>
-                                    <div class="item-quantity">
-                                        <img class="btn-minus" style="height: 19px; width: 19px; cursor: pointer;"
-                                            src="/icons/minus.png">
-                                        <p>
-                                            <%=i.quantity%>
-                                        </p>
-                                        <img class="btn-plus" style="height: 20px; width: 20px; cursor: pointer;"
-                                            src="/icons/plus2.png">
+                    <div class="cart-dropdown">
+                        <ul class="cart-items">
+                            <%items.forEach(i=>{%>
+                                <li class="cart-item" data-id="<%=i.product_id%>">
+                                    <img src="<%=i.image_path%>" alt="<%=i.title%>">
+                                    <div class="item-details">
+                                        <p class="item-name"><%=i.title%></p>
+                                        <p class="item-price"><%=i.total_item_price%> TL</p>
+                                        <div class="item-actions">
+                                            <div class="item-quantity">
+                                                <img class="btn-minus" src="/icons/minus.png" alt="-">
+                                                <p><%=i.quantity%></p>
+                                                <img class="btn-plus" src="/icons/plus2.png" alt="+">
+                                            </div>
+                                            <img class="btn-delete" src="/icons/trashbin.png" alt="Delete">
+                                        </div>
                                     </div>
-                                    <img class="btn-delete" style="height: 30px; width: 30px; cursor: pointer;"
-                                        src="/icons/trashbin.png">
-                                </div>
-                            </li>
+                                </li>
                             <%})%>
-                    </ul>
-                    <div class="purchase-btn cart-item" data-id="-1">
-                        <button>
-                            Purchase
-                        </button>
+                        </ul>
+                        <div class="purchase-btn cart-item" data-id="-1">
+                            <button class="btn-primary">Purchase</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="dropdown">
-                <button class="dropdown-btn" id="menuButton">
-                    <img src="/icons/menu-icon.png">
-                </button>
-                <ul class="dropdown-content" id="dropdownList">
-                    <li><a href="/cons-profile"><img src="/icons/profile.svg">Profile</a></li>
-                    <li><a href="/cons-settings"><img src="/icons/settings.png">Settings</a></li>
-                    <li>
-                        <hr>
-                    </li>
-                    <li><a href="/"><img src="/icons/logout.png">Logout</a></li>
-                </ul>
+
+                <div class="dropdown">
+                    <button class="dropdown-btn" id="menuButton">
+                        <img src="/icons/menu-icon.png" alt="Menu">
+                    </button>
+                    <ul class="dropdown-content" id="dropdownList">
+                        <li><a href="/cons-profile"><img src="/icons/profile.svg">Profile</a></li>
+                        <li><a href="/cons-settings"><img src="/icons/settings.png">Settings</a></li>
+                        <li><hr></li>
+                        <li><a href="/"><img src="/icons/logout.png">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="main-box">
-
         <section class="product-slideshow">
-            <h1>Personalized for you</h1>
+            <div class="section-header">
+                <h1>Personalized for you</h1>
+                <p>Discover products selected just for your routine.</p>
+            </div>
+            
             <div class="slideshow-container">
                 <div class="slides-wrapper">
                     <% products.forEach( p=> {%>
-                        `<div class="slide">
-                            <img src="<%=p.image_path%>" alt="Product 1">
-                            <h3>
-                                <%=p.title%>
-                            </h3>
-                            <div class="price" style="text-decoration: line-through;">
-                                <%=p.normal_price%> TL
+                        <div class="slide">
+                            <div class="slide-image-wrapper">
+                                <img src="<%=p.image_path%>" alt="<%=p.title%>">
                             </div>
-                            <div class="price">
-                                <%=p.discounted_price%> TL
-                            </div>
-                            <div class="expiry-status" style="font-size: 0.9em; color: #d9534f; margin-bottom: 10px; font-weight: bold;">
-                                <% 
-                                    const today = new Date();
-                                    const expDate = new Date(p.expiration_date);
-                                    const diffTime = expDate - today;
-                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                %>
-                                <%= diffDays > 0 ? diffDays : 0 %> days remaining to expire
-                            </div>
-                            <form action="/add-to-cart" method="POST" class="add-to-cart-form">
-                                <input type="hidden" name="product_id" value="<%= p.product_id %>">
+                            <div class="slide-info">
+                                <h3><%=p.title%></h3>
+                                
+                                <div class="price-container">
+                                    <span class="old-price"><%=p.normal_price%> TL</span>
+                                    <span class="new-price"><%=p.discounted_price%> TL</span>
+                                </div>
 
-                                <input type="number" name="quantity" value="1" min="1">
-
-                                <button type="submit">Add to Cart</button>
-                            </form>
+                                <div class="expiry-status">
+                                    <% 
+                                        const today = new Date();
+                                        const expDate = new Date(p.expiration_date);
+                                        const diffTime = expDate - today;
+                                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    %>
+                                    ⏳ <%= diffDays > 0 ? diffDays : 0 %> days remaining
+                                </div>
+                                
+                                <form action="/add-to-cart" method="POST" class="add-to-cart-form">
+                                    <input type="hidden" name="product_id" value="<%= p.product_id %>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn-primary">Add to Cart</button>
+                                </form>
+                            </div>
                         </div>
-                        <%})%>
+                    <%})%>
                 </div>
             </div>
 
@@ -134,14 +127,7 @@
                 <button class="next" onclick="changeSlide(1)">❯</button>
             </div>
         </section>
-
-
-
     </main>
-    <footer>
-
-    </footer>
-
 
     <script>
         let currentOffset = 0;
@@ -150,7 +136,7 @@
         const totalSlides = slides.length;
         const slidesToShow = 3;
         const slidePosition = document.getElementById('slidePosition');
-
+        
         function updateSlidePosition() {
             const startSlide = currentOffset + 1;
             const endSlide = Math.min(currentOffset + slidesToShow, totalSlides);
@@ -159,7 +145,6 @@
 
         function changeSlide(direction) {
             const maxOffset = Math.max(0, totalSlides - slidesToShow);
-
             if (direction === 1) {
                 if (currentOffset < maxOffset) {
                     currentOffset++;
@@ -174,36 +159,30 @@
                 }
             }
 
-            const slideWidth = 400;
+            // Kart genişliği + gap hesaplaması (yaklaşık 340px)
+            const slideWidth = slides[0].offsetWidth + 25; 
             slidesWrapper.style.transform = `translateX(-${currentOffset * slideWidth}px)`;
             updateSlidePosition();
         }
 
-
         updateSlidePosition();
-
 
         const menuButton = document.getElementById('menuButton');
         const dropdownList = document.getElementById('dropdownList');
-
 
         menuButton.addEventListener('click', (event) => {
             dropdownList.classList.toggle('show');
             event.stopPropagation();
         });
-
-
         window.addEventListener('click', () => {
             if (dropdownList.classList.contains('show')) {
                 dropdownList.classList.remove('show');
             }
         });
 
-
         document.querySelectorAll('.add-to-cart-form').forEach(form => {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
                 const formData = new FormData(form);
                 const data = {
                     product_id: formData.get('product_id'),
@@ -216,9 +195,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
-
                     const result = await response.json();
-
                     if (result.success) {
                         updateCart(result.items);
                     }
@@ -230,39 +207,34 @@
 
         function updateCart(items) {
             const cartList = document.querySelector('.cart-items');
-            const cartIcon = document.querySelector('.cart-icon')
+            const cartCount = document.querySelector('.cart-count');
             if (!cartList) return;
+            
             cartList.innerHTML = '';
+            cartCount.innerText = items.length;
 
-            cartIcon.innerHTML = '';
-            cartIcon.innerHTML += ` 
-            <img src="/icons/basket.png" alt="Cart">
-            <span class="cart-count" style="color: black;">
-                ${items.length}
-            </span>`
             items.forEach(item => {
                 cartList.innerHTML += `
-            <li class="cart-item" data-id="${item.product_id}">
-                <img src="${item.image_path}" alt="${item.title}">
-                <div class="item-details">
-                    <p class="item-name">${item.title}</p>
-                    <p class="item-price">${item.total_item_price}</p>
-                    <div class="item-quantity">
-                        <img  class="btn-minus" style="height: 19px; width: 19px;" src="/icons/minus.png">
-                        <p>${item.quantity}</p>
-                        <img  class="btn-plus" style="height: 20px; width: 20px;" src="/icons/plus2.png">
+                <li class="cart-item" data-id="${item.product_id}">
+                    <img src="${item.image_path}" alt="${item.title}">
+                    <div class="item-details">
+                        <p class="item-name">${item.title}</p>
+                        <p class="item-price">${item.total_item_price} TL</p>
+                        <div class="item-actions">
+                            <div class="item-quantity">
+                                <img class="btn-minus" src="/icons/minus.png" alt="-">
+                                <p>${item.quantity}</p>
+                                <img class="btn-plus" src="/icons/plus2.png" alt="+">
+                            </div>
+                            <img class="btn-delete" src="/icons/trashbin.png" alt="Delete">
+                        </div>
                     </div>
-                    <img  class="btn-delete" style="height: 30px; width: 30px;" src="/icons/trashbin.png">
-                </div>
-            </li>`;
+                </li>`;
             });
         }
 
-
         const cartContainer = document.querySelector('.cart-dropdown');
-
         cartContainer.addEventListener('click', async (e) => {
-
             const itemRow = e.target.closest('.cart-item');
             if (!itemRow) return;
             const productId = itemRow.dataset.id;
@@ -281,8 +253,7 @@
                 bodyData.action = 'dec';
             } else if (e.target.classList.contains('btn-delete')) {
                 endpoint = '/remove-item';
-            } 
-            else {
+            } else {
                 return;
             }
 
@@ -293,19 +264,13 @@
                     body: JSON.stringify(bodyData)
                 });
                 const result = await response.json();
-
                 if (result.success) {
                     updateCart(result.items);
-                    document.querySelector('.cart-count').innerText = result.items.length;
                 }
             } catch (err) {
                 console.error("Cart update failed", err);
             }
         });
-
-
     </script>
-
 </body>
-
 </html>
