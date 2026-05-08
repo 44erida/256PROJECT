@@ -109,6 +109,15 @@
                             <div class="price">
                                 <%=p.discounted_price%> TL
                             </div>
+                            <div class="expiry-status" style="font-size: 0.9em; color: #d9534f; margin-bottom: 10px; font-weight: bold;">
+                                <% 
+                                    const today = new Date();
+                                    const expDate = new Date(p.expiration_date);
+                                    const diffTime = expDate - today;
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                %>
+                                <%= diffDays > 0 ? diffDays : 0 %> days remaining to expire
+                            </div>
                             <form action="/add-to-cart" method="POST" class="add-to-cart-form">
                                 <input type="hidden" name="product_id" value="<%= p.product_id %>">
 
