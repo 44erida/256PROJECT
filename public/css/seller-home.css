@@ -173,6 +173,25 @@ a.logout:hover {
     object-fit: cover;
 }
 
+.expired-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #1f2937;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 2;
+    letter-spacing: 1px;
+}
+
+.product-card.expired {
+    opacity: 0.65;
+    filter: grayscale(50%);
+}
+
 .dashboard-wrapper {
     padding: 30px;
 }

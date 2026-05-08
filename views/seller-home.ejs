@@ -188,6 +188,7 @@
             <li><a href="/like" class="likes"><i class="fas fa-heart"></i> Likes</a></li>
             <li><a href="/add-product" class="add"><i class="fas fa-plus"></i> Add New Product</a></li>
         </ul>
+        
         <div class="sidebar-bottom">
             <a href="/logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
@@ -201,27 +202,26 @@
             
             <div style="flex:1"></div> 
             <div class="header-right">
-    <button class="icon-btn">
-        <i class="fas fa-bell"></i>
-        <span class="badge">3</span>
-    </button>
-    
-    <!-- Değişen kısım burası -->
-    <div class="user-dropdown">
-        <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=Satici&background=4f46e5&color=fff" alt="Profil">
-            <div>
-                <span style="font-size: 14px; font-weight: 600;"><%= user.name%></span>
-                <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
+                <button class="icon-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                
+                <div class="user-dropdown">
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Satici&background=4f46e5&color=fff" alt="Profil">
+                        <div>
+                            <span style="font-size: 14px; font-weight: 600;"><%= user.name%></span>
+                            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
+                        </div>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="/edit-info"><i class="fas fa-user-edit"></i> Update Info</a>
+                        <a href="/edit-password"><i class="fas fa-key"></i> Change Password</a>
+                        <a href="/edit-address"><i class="fas fa-map-marker-alt"></i> Update Address</a>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="dropdown-content">
-            <a href="/edit-info"><i class="fas fa-user-edit"></i> Update Info</a>
-            <a href="/edit-password"><i class="fas fa-key"></i> Change Password</a>
-            <a href="/edit-address"><i class="fas fa-map-marker-alt"></i> Update Address</a>
-        </div>
-    </div>
-</div>
         </header>
 
         <div class="dashboard-wrapper">
@@ -246,38 +246,46 @@
                     <div class="kpi-icon"><i class="fas fa-box"></i></div>
                 </div>
             </div>
+            
             <div class="product-grid">
-    <% products.forEach(p => { %>
-        <div class="product-card">
-            <div class="product-badge">Sale</div>
-            <div class="product-image">
-                <img src="<%= p.image_path ? p.image_path : '/images/default-product.png' %>" alt="<%= p.title %>">
+                <% products.forEach(p => { 
+                    const isExpired = new Date(p.expiration_date) < new Date();
+                %>
+                    <div class="product-card <%= isExpired ? 'expired' : '' %>">
+                        <% if(isExpired) { %>
+                            <div class="expired-badge">EXPIRED</div>
+                        <% } else { %>
+                            <div class="product-badge">Sale</div>
+                        <% } %>
+                        
+                        <div class="product-image">
+                            <img src="<%= p.image_path ? p.image_path : '/images/default-product.png' %>" alt="<%= p.title %>">
+                        </div>
+                        <div class="product-details">
+                            <h3 class="product-title"><%= p.title %></h3>
+                            <div class="product-stock">Stok: <%= p.stock %></div>
+                            <div class="price-container">
+                                <span class="old-price"><%= p.normal_price %> TL</span>
+                                <span class="new-price"><%= p.discounted_price %> TL</span>
+                            </div>
+                            <div class="product-date">
+                                <i class="far fa-calendar-alt"></i> Expiration: <%= new Date(p.expiration_date).toLocaleDateString('tr-TR') %>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <a href="/update/<%= p.product_id %>" class="edit-btn">
+                                <i class="fas fa-edit"></i> Update
+                            </a>
+                            
+                            <form action="/delete/<%= p.product_id %>" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                <button type="submit" class="delete-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %>
             </div>
-            <div class="product-details">
-                <h3 class="product-title"><%= p.title %></h3>
-                <div class="product-stock">Stok: <%= p.stock %></div>
-                <div class="price-container">
-                    <span class="old-price"><%= p.normal_price %> TL</span>
-                    <span class="new-price"><%= p.discounted_price %> TL</span>
-                </div>
-                <div class="product-date">
-                    <i class="far fa-calendar-alt"></i> Expiration: <%= new Date(p.expiration_date).toLocaleDateString('tr-TR') %>
-                </div>
-            </div>
-            <div class="product-actions">
-                <a href="/update/<%= p.product_id %>" class="edit-btn">
-                    <i class="fas fa-edit"></i> Update
-                </a>
-                
-                <form action="/delete/<%= p.product_id %>" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                    <button type="submit" class="delete-btn">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </form>
-            </div>
-        </div>
-    <% }) %>
-</div>
         </div>
     </main>
 
