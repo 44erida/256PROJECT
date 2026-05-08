@@ -1,7 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import bcrypt from 'bcrypt'
-
+import 'dotenv/config'; 
 const router = express.Router();
 
 // Mail verification function from Merve
