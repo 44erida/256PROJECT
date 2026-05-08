@@ -27,11 +27,11 @@
         <form action="/update-info" method="POST">
             <div class="form-group">
                 <label>Adınız</label>
-                <input type="text" name="name" value="<%= user.name %>" required>
+                <input type="text" name="name" id="name" value="<%= user.name %>" required>
             </div>
             <div class="form-group">
                 <label>Mağaza/Marka Adı</label>
-                <input type="text" name="brand_name" placeholder="Mağaza adınız" required>
+                <input type="text" name="brand_name" id="brand_name" value="<%= user.market_name %>" required>
             </div>
             <button type="submit">Güncelle</button>
         </form>

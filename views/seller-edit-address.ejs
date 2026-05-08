@@ -80,9 +80,11 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
+            pointer-events: none;
         }
 
-        .input-group input {
+        .input-group input, 
+        .input-group select {
             width: 100%;
             padding: 12px 12px 12px 40px;
             border: 1px solid #d1d5db;
@@ -90,9 +92,14 @@
             font-size: 15px;
             transition: all 0.2s;
             box-sizing: border-box;
+            background-color: white;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
 
-        .input-group input:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -168,11 +175,14 @@
             <% } %>
 
             <form action="/update-address" method="POST">
+                
                 <div class="form-group">
                     <label>Şehir</label>
                     <div class="input-group">
                         <i class="fas fa-city"></i>
-                        <input type="text" name="city" placeholder="Örn: Ankara" required>
+                        <select name="city" id="city" required>
+                            <option value="">Şehir Seçiniz</option>
+                        </select>
                     </div>
                 </div>
 
@@ -180,7 +190,9 @@
                     <label>İlçe</label>
                     <div class="input-group">
                         <i class="fas fa-map-pin"></i>
-                        <input type="text" name="district" placeholder="Örn: Çankaya" required>
+                        <select name="district" id="district" required disabled>
+                            <option value="">İlçe Seçiniz</option>
+                        </select>
                     </div>
                 </div>
 
@@ -192,5 +204,55 @@
             </a>
         </div>
     </div>
+
+    <script>
+        const citySelect = document.getElementById("city");
+        const districtSelect = document.getElementById("district");
+        
+        const currentCity = "<%= market.city %>";
+        const currentDistrict = "<%= market.district %>";
+        
+        let cities = [];
+
+        async function loadCities() {
+            try {
+                const res = await fetch("https://turkiyeapi.dev/api/v1/provinces");
+                const data = await res.json();
+                cities = data.data;
+
+                cities.forEach(city => {
+                    const isSelected = city.name === currentCity ? "selected" : "";
+                    citySelect.innerHTML += `<option value="${city.name}" ${isSelected}>${city.name}</option>`;
+                });
+
+                if (currentCity) {
+                    updateDistricts(currentCity, currentDistrict);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function updateDistricts(selectedCityName, districtToSelect = "") {
+            districtSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
+            const selectedCity = cities.find(c => c.name === selectedCityName);
+            
+            if (selectedCity) {
+                selectedCity.districts.forEach(d => {
+                    const isSelected = d.name === districtToSelect ? "selected" : "";
+                    districtSelect.innerHTML += `<option value="${d.name}" ${isSelected}>${d.name}</option>`;
+                });
+                districtSelect.disabled = false;
+            } else {
+                districtSelect.disabled = true;
+            }
+        }
+
+        citySelect.addEventListener("change", function() {
+            updateDistricts(this.value);
+        });
+
+        loadCities();
+    </script>
 </body>
 </html>

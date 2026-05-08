@@ -136,11 +136,18 @@ router.post("/update/:id", upload.single("productImage"), async (req, res) => {
     }
 })
 
-router.get("/edit-info", (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/login");
+router.get("/edit-info", async (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+    
+    try {
+        const [rows] = await db.query(
+            "SELECT u.name, m.market_name FROM users u JOIN market_profiles m ON u.user_id = m.user_id WHERE u.user_id = ?", 
+            [req.session.user.user_id]
+        );
+        res.render("seller-edit-info", { user: rows[0], info: null, isError: false });
+    } catch (error) {
+        res.status(500).send("Hata oluştu.");
     }
-    res.render("seller-edit-info", { user: req.session.user, info: null, isError: false });
 });
 
 router.post("/update-info", async (req, res) => {
@@ -158,9 +165,7 @@ router.post("/update-info", async (req, res) => {
 });
 
 router.get("/edit-password", (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/login");
-    }
+    if (!req.session.user) return res.redirect("/login");
     res.render("seller-edit-password", { info: null, isError: false });
 });
 
@@ -183,11 +188,18 @@ router.post("/update-password", async (req, res) => {
     }
 });
 
-router.get("/edit-address", (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/login");
+router.get("/edit-address", async (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+
+    try {
+        const [rows] = await db.query(
+            "SELECT city, district FROM market_profiles WHERE user_id = ?", 
+            [req.session.user.user_id]
+        );
+        res.render("seller-edit-address", { market: rows[0], info: null, isError: false });
+    } catch (error) {
+        res.status(500).send("Hata oluştu.");
     }
-    res.render("seller-edit-address", { info: null, isError: false });
 });
 
 router.post("/update-address", async (req, res) => {
@@ -195,9 +207,18 @@ router.post("/update-address", async (req, res) => {
     const userId = req.session.user.user_id;
     try {
         await db.query("UPDATE market_profiles SET city = ?, district = ? WHERE user_id = ?", [city, district, userId]);
-        res.render("seller-edit-address", { info: "Adres bilgileri güncellendi.", isError: false });
+        
+        res.render("seller-edit-address", { 
+            info: "Adres bilgileri güncellendi.", 
+            isError: false,
+            market: { city: city, district: district }
+        });
     } catch (error) {
-        res.render("seller-edit-address", { info: "Adres güncellenirken hata oluştu.", isError: true });
+        res.render("seller-edit-address", { 
+            info: "Adres güncellenirken hata oluştu.", 
+            isError: true,
+            market: { city: city, district: district }
+        });
     }
 });
 
