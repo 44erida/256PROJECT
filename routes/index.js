@@ -44,8 +44,19 @@ router.get("/dashboard", (req, res) => {
 
 router.get("/consumer-home", async (req, res) => {
     try {
-        const [products] = await db.query("select * from products");
         if (req.session.user) {
+            const searchQuery = req.query.search;
+            
+            let productsQuery = "SELECT * FROM products";
+            let queryParams = [];
+
+            if (searchQuery) {
+                productsQuery += " WHERE title LIKE ?";
+                queryParams.push(`%${searchQuery}%`);
+            }
+
+            const [products] = await db.query(productsQuery, queryParams);
+
             const query = `
             SELECT p.title, p.discounted_price, p.image_path, ci.quantity,
             (p.discounted_price * ci.quantity) AS total_item_price
@@ -55,9 +66,16 @@ router.get("/consumer-home", async (req, res) => {
             JOIN consumer_profiles cp ON c.consumer_id = cp.consumer_id
             WHERE cp.user_id = ?
             `;
+            
             const [items] = await db.query(query, [req.session.user.user_id]);
             const [consumer] = await db.query("select * from consumer_profiles where user_id=?", [req.session.user.user_id]);
-            res.render("consumer-home", { consumer: consumer, products: products, items: items });
+            
+            res.render("consumer-home", { 
+                consumer: consumer, 
+                products: products, 
+                items: items,
+                searchQuery: searchQuery 
+            });
         } else {
             res.redirect("/login");
         }
